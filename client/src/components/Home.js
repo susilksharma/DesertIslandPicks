@@ -1,15 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { UserContext } from "./UserContext";
 
 //-----------------------//
 //---Home Component---//
 //-----------------------//
 const Home = () => {
   const { user, isAuthenticated } = useAuth0();
+  const { currentUser, receiveCurrentUser } = useContext(UserContext);
 
-  //ADD USER TO DB IF NOT ALREADY THERE (CHECK EMAIL)
+  //Add user to db if not already there
   useEffect(() => {
     user &&
       fetch("/add-user", {
@@ -21,14 +23,23 @@ const Home = () => {
         body: JSON.stringify({
           email: user.email,
           given_name: user.given_name,
+          family_name: user.family_name,
+          name: user.name,
+          nickname: user.nickname,
           picture: user.picture,
         }),
-      }).then((res) => res.json());
-    //DO I NEED TO DO SOMETHING WITH THE RESPONSE??
-    // .then((data) => {
-    //   console.log(data);
-    // });
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          //Enter Id, name in session storage
+          data.status === 200 &&
+            receiveCurrentUser({
+              userId: data.data.userId,
+              name: data.data.given_name,
+            });
+        });
   }, [isAuthenticated]);
+  // console.log(user);
 
   return (
     <main>
@@ -42,9 +53,9 @@ const Home = () => {
         </TitleDiv>
         <Line />
         {isAuthenticated ? (
-          <h2>Welcome back, {user?.given_name}</h2>
+          <h2>Welcome back, {currentUser.name}</h2>
         ) : (
-          <h2>What are your favorite albums?</h2>
+          <h2>Choose your favorite albums?</h2>
         )}
         {/* <ol>
           <li>feed</li>
@@ -74,11 +85,11 @@ const TitleDiv = styled.div`
   align-items: center;
 
   h1 {
-    font-size: 80px;
+    font-size: 60px;
   }
 `;
 
 const HomeLogo = styled.img`
-  height: 200px;
+  height: 140px;
 `;
 export default Home;

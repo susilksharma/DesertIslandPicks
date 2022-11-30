@@ -3,30 +3,36 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const port = 8000;
 
+//Music Handlers
 const {
-  getRandomRelease,
   searchAlbum,
   getAlbumDetails,
+  getSpotify,
+} = require("./handlers/MusicHandlers");
+
+//User Handlers
+const {
   addUser,
   addAlbum,
   getMyPicks,
-} = require("./handlers/handlers");
+  addReview,
+  deletePick,
+} = require("./handlers/UserHandlers");
 
 express()
   .use(express.json())
   .use(helmet())
   .use(morgan("tiny"))
-  .get("/hello", (req, res) => {
-    res.status(200).json({ status: 200, message: "Hello World!" });
-  })
 
-  .get("/release", getRandomRelease)
   .get("/search/:searchValue", searchAlbum)
   .get("/album/:albumId", getAlbumDetails)
-  .get("/mypicks", getMyPicks)
+  .get("/spotify", getSpotify)
 
+  .get("/mypicks/:userId", getMyPicks)
   .post("/add-user", addUser)
   .patch("/add-album", addAlbum)
+  .patch("/add-review", addReview)
+  .patch("/delete-pick", deletePick)
 
   .listen(port, () => {
     console.log(`Listening on port ${port}`);

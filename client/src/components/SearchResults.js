@@ -11,7 +11,7 @@ const SearchResults = () => {
   const [items, setItems] = useState([]);
   const { searchValue } = useParams();
 
-  //   const token = process.env.TOKEN;
+  const token = process.env.TOKEN;
 
   //   FRONTEND FETCH
   //   useEffect(() => {
@@ -35,7 +35,6 @@ const SearchResults = () => {
       })
       .catch((err) => console.log("Error: ", err));
   }, []);
-  //  ----------BACKEND FETCH----------
 
   //   console.log("items: ", items);
   return (

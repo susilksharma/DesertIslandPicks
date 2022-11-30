@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -25,15 +25,41 @@ const AlbumDetails = () => {
       .catch((err) => console.log("Error: ", err));
   }, []);
 
+  //Fetch Spotify info
+  //   useEffect(() => {
+  //     fetch("/spotify", {
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         artist: album.artists?.[0]?.name,
+  //         title: album.title,
+  //       }),
+  //     })
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         console.log(data);
+  //         // setAlbum({ ...album, spotify: data.data });
+  //       })
+  //       //WHAT TO DO WITH ERROR
+  //       .catch((err) => console.log("Error: ", err));
+  //   }, [album]);
+
   const addAlbum = () => {
     fetch(`/add-album`, {
       method: "PATCH",
       body: JSON.stringify({
         email: user.email,
-        id: album.id,
+        albumId: album.id,
         title: album.title,
         artist: album.artists?.[0]?.name,
         image: album.images?.[0]?.uri,
+        genre: album.genres?.[0],
+        style: album.styles?.[0],
+        year: album?.year,
+        video: album.videos?.[0]?.uri.replace("watch?v=", "embed/"),
+        main_release: album.main_release,
       }),
       headers: {
         Accept: "application/json",
@@ -70,7 +96,10 @@ const AlbumDetails = () => {
           </ImgDiv>
           <InfoDiv>
             <h2>
-              {album.artists?.[0]?.name} - {album.title}
+              <ArtistLink to={`/search/${album.artists?.[0]?.name}`}>
+                {album.artists?.[0]?.name}
+              </ArtistLink>{" "}
+              - {album.title}
             </h2>
             <h3>
               <span>
@@ -79,7 +108,7 @@ const AlbumDetails = () => {
               {", "}
               {album?.year}
             </h3>
-            <div>
+            <Tracklist>
               {album.tracklist?.map((track) => {
                 return (
                   <p key={track?.position}>
@@ -87,7 +116,7 @@ const AlbumDetails = () => {
                   </p>
                 );
               })}
-            </div>
+            </Tracklist>
             <iframe
               src={album.videos?.[0]?.uri.replace("watch?v=", "embed/")}
               frameBorder="0"
@@ -95,7 +124,7 @@ const AlbumDetails = () => {
               allowFullScreen
               title="video"
               width="400px"
-              height="250px"
+              height="220px"
             />
           </InfoDiv>
         </AlbumDiv>
@@ -109,11 +138,21 @@ const AlbumDiv = styled.div`
   gap: 40px;
   align-items: center;
   justify-content: center;
+  color: var(--dark-grey);
+
+  h2 {
+    font-size: 2em;
+  }
 
   h3 {
+    font-size: 1em;
     span {
       font-style: italic;
     }
+  }
+
+  p {
+    font-size: 0.8em;
   }
 `;
 
@@ -121,7 +160,8 @@ const ImgDiv = styled.div`
   position: relative;
 
   img {
-    width: 100%;
+    height: 550px;
+    width: auto;
   }
 
   div {
@@ -158,6 +198,17 @@ const InfoDiv = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+`;
+
+const Tracklist = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  height: 200px;
+`;
+
+const ArtistLink = styled(Link)`
+  text-decoration: underline;
+  color: var(--dark-grey);
 `;
 
 export default AlbumDetails;

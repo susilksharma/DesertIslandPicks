@@ -4,11 +4,12 @@ import LogInButton from "./LogInButton";
 import LogOutButton from "./LogOutButton";
 import { useAuth0 } from "@auth0/auth0-react";
 import SearchBar from "./SearchBar";
+import { BsFillMoonFill } from "react-icons/bs";
 
 //----------------------//
 //---Header Component---//
 //----------------------//
-const Header = () => {
+const Header = ({ themeToggler }) => {
   const { isLoading, error, isAuthenticated } = useAuth0();
 
   return (
@@ -17,6 +18,12 @@ const Header = () => {
         <HomeLogo src="/logo.png" style={{ background: "transparent" }} />
       </Link>
 
+      <BsFillMoonFill
+        onClick={themeToggler}
+        color="#F8F8F8"
+        size={22}
+        style={{ cursor: "pointer" }}
+      />
       <PageLink
         to={`/mypicks/`}
         style={{ visibility: !isAuthenticated && "hidden" }}
@@ -63,11 +70,11 @@ const PageLink = styled(NavLink)`
   cursor: pointer;
 
   :hover {
-    color: #fc8888;
+    color: #ec7274;
   }
 
   &.active {
-    color: #fc8888;
+    color: #ec7274;
   }
 `;
 
