@@ -10,6 +10,9 @@ const {
   getSpotify,
 } = require("./handlers/MusicHandlers");
 
+//Movie Handlers
+const { searchMovies } = require("./handlers/MovieHandlers");
+
 //User Handlers
 const {
   addUser,
@@ -17,6 +20,7 @@ const {
   getMyPicks,
   addReview,
   deletePick,
+  getFeed,
 } = require("./handlers/UserHandlers");
 
 express()
@@ -24,11 +28,17 @@ express()
   .use(helmet())
   .use(morgan("tiny"))
 
+  //Music
   .get("/search/:searchValue", searchAlbum)
   .get("/album/:albumId", getAlbumDetails)
-  .get("/spotify", getSpotify)
+  .get("/spotify/:searchValue", getSpotify)
 
+  //Movie
+  .get("search-movie/:searchValue", searchMovies)
+
+  //User
   .get("/mypicks/:userId", getMyPicks)
+  .get("/feed/:userId", getFeed)
   .post("/add-user", addUser)
   .patch("/add-album", addAlbum)
   .patch("/add-review", addReview)

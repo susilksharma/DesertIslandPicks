@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AiOutlineEye, AiFillDelete } from "react-icons/ai";
 import { RiYoutubeFill } from "react-icons/ri";
 import ReviewPopUp from "./ReviewPopUp";
@@ -11,7 +11,6 @@ import { UserContext } from "../UserContext";
 //----------------------------//
 const PickDetail = ({ pick }) => {
   const { currentUser } = useContext(UserContext);
-  const navigate = useNavigate();
 
   const removePick = (e) => {
     e.preventDefault();
@@ -28,7 +27,7 @@ const PickDetail = ({ pick }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         window.alert(data.message);
         window.location.reload();
       })
@@ -55,12 +54,15 @@ const PickDetail = ({ pick }) => {
           </ImgDiv>
         </Link>
         <ReviewDiv>
-          <a
-            href={pick.video.replace("embed/", "watch?v=")}
-            style={{ color: "var(--dark-grey)" }}
-          >
-            <RiYoutubeFill size={30} />
-          </a>
+          {/*CHANGE FROM INLINE */}
+          {pick.video && (
+            <a
+              href={pick.video.replace("embed/", "watch?v=")}
+              style={{ color: "var(--dark-grey)", width: "fit-content" }}
+            >
+              <RiYoutubeFill size={30} />
+            </a>
+          )}
           <h3>Your Review</h3>
           {pick?.review === "" ? (
             <div>
@@ -143,7 +145,7 @@ const ReviewDiv = styled.div`
 
 const ArtistLink = styled(Link)`
   text-decoration: underline;
-  color: var(--dark-grey);
+  color: ${({ theme }) => theme.text};
 `;
 
 export default PickDetail;

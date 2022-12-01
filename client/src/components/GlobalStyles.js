@@ -13,7 +13,7 @@ const GlobalStyles = createGlobalStyle`
 }
 
 main{
-    padding: 50px 200px;
+    padding: 50px 220px;
     background:  ${({ theme }) => theme.background};
     transition: all 0.50s linear;
     /* Background gradient fixed and centered */
@@ -24,6 +24,8 @@ main{
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
+    color: ${({ theme }) => theme.text};
+
 }
 `;
 

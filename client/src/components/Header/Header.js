@@ -54,7 +54,7 @@ const Header = ({ themeToggler }) => {
 const HeaderDiv = styled.div`
   width: 100%;
   height: 80px;
-  padding: 0 200px;
+  padding: 0 220px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -70,7 +70,7 @@ const PageLink = styled(NavLink)`
   cursor: pointer;
 
   :hover {
-    color: #ec7274;
+    color: #8ba9f0;
   }
 
   &.active {

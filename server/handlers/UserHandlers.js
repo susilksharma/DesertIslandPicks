@@ -6,69 +6,8 @@ const options = {
   useUnifiedTopology: true,
 };
 
-// //Authorization token & package for Discogs API
-// const Discogs = require("disconnect").Client;
-// const { TOKEN } = process.env;
-
-// //Spotify Info
-// const { SPOTIFY_TOKEN } = process.env;
-
 //Package to generate user ID
 const { v4: uuidv4 } = require("uuid");
-
-// //Search Discogs API for album based on search parameters
-// const searchAlbum = async (req, res) => {
-//   const searchValue = req.params.searchValue;
-//   const db = new Discogs({
-//     userToken: TOKEN,
-//   }).database();
-
-//   try {
-//     //Look through all master recordings that contain search parameters
-//     const response = await db.search(searchValue, { type: "master" });
-//     response
-//       ? res.status(200).json({
-//           status: 200,
-//           data: response,
-//           message: "Search Results",
-//         })
-//       : res.status(404).json({
-//           status: 404,
-//           data: searchValue,
-//           message: "No Search Results",
-//         });
-//   } catch (err) {
-//     return res.status(500).json({ status: 500, message: err.message });
-//   }
-// };
-
-// //Get details for album based on it's ID
-// const getAlbumDetails = async (req, res) => {
-//   const albumId = req.params.albumId;
-//   const db = new Discogs({
-//     userToken: TOKEN,
-//   }).database();
-
-//   try {
-//     const response = await db.getMaster(albumId);
-//     response
-//       ? res.status(200).json({
-//           status: 200,
-//           data: response,
-//           message: "Selected Album",
-//         })
-//       : res
-//           .status(404)
-//           .json({ status: 404, data: albumId, message: "Invalid Album Id" });
-//   } catch (err) {
-//     return res.status(500).json({ status: 500, message: err.message });
-//   }
-// };
-
-// const getSpotify = async (req, res) => {
-//   const albumInfo = req.body;
-//   console.log(albumInfo);
-// };
 
 //Add User to DB if they aren't already there
 const addUser = async (req, res) => {
@@ -98,9 +37,18 @@ const addUser = async (req, res) => {
         data: { ...user, userId: userId },
         message: "User created",
       });
-      await db
-        .collection("users")
-        .insertOne({ ...user, userId: userId, picks: [] });
+      await db.collection("users").insertOne({
+        ...user,
+        userId: userId,
+        //PICKS START AT 5???
+        albumPicks: [
+          // { pick: 1 },
+          // { pick: 2 },
+          // { pick: 3 },
+          // { pick: 4 },
+          // { pick: 5 },
+        ],
+      });
     }
   } catch (err) {
     return res.status(500).json({ status: 500, message: err.message });
@@ -114,36 +62,37 @@ const addAlbum = async (req, res) => {
   await client.connect();
 
   const albumInfo = req.body;
+  console.log(albumInfo);
   try {
     const db = client.db("dipDb");
 
     //Find user
     const userInfo = await db
       .collection("users")
-      .findOne({ email: albumInfo.email });
+      .findOne({ userId: albumInfo.userId });
 
     //Check is album already picked?
     const checkAlbum = userInfo.picks.find((pick) => {
       return pick.albumId === albumInfo.albumId;
     });
 
-    //Iff picks are full (5 max), send error
-    if (userInfo.picks.length > 4) {
+    //If album already picked send error
+    if (checkAlbum !== undefined) {
+      res
+        .status(400)
+        .json({ status: 400, data: userInfo, message: "Album already picked" });
+    }
+    //If picks are full (5 max), send error
+    else if (userInfo.picks.length > 4) {
       await db.collection("users");
       res
         .status(400)
         .json({ status: 400, data: userInfo, message: "Picks full" });
     }
-    //If album already picked send error
-    else if (checkAlbum !== undefined) {
-      res
-        .status(400)
-        .json({ status: 400, data: userInfo, message: "Album already picked" });
-    }
     //Otherwise, add album to picks
     else if (checkAlbum === undefined) {
       await db.collection("users").updateOne(
-        { email: albumInfo.email },
+        { userId: albumInfo.userId },
         {
           $push: {
             picks: {
@@ -208,13 +157,14 @@ const addReview = async (req, res) => {
   }
 };
 
+//Delete User's Pick
 const deletePick = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
   await client.connect();
 
   const pickToDelete = req.body;
-  console.group(pickToDelete);
+  // console.group(pickToDelete);
   try {
     const db = client.db("dipDb");
 
@@ -239,10 +189,39 @@ const deletePick = async (req, res) => {
   }
 };
 
+const getFeed = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  const userId = req.params.userId;
+
+  await client.connect();
+
+  try {
+    const db = client.db("dipDb");
+    const picks = await db.collection("users").find().toArray();
+
+    const filterFeed = await picks.filter((pick) => {
+      return pick.userId !== userId;
+    });
+
+    const picksArray = await filterFeed.map((feed) => {
+      return feed.picks;
+    });
+
+    picks
+      ? res
+          .status(200)
+          .json({ status: 200, data: picksArray, message: "User picks!" })
+      : res.status(400).json({ status: 400, message: error });
+  } catch (error) {
+    res.status(400).json({ status: 400, message: error });
+  }
+};
+
 module.exports = {
   addUser,
   addAlbum,
   getMyPicks,
   addReview,
   deletePick,
+  getFeed,
 };

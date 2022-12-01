@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../UserContext";
 import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -12,6 +13,9 @@ const AlbumDetails = () => {
   const [album, setAlbum] = useState(null);
   const albumId = useParams();
   const { user } = useAuth0();
+  const { currentUser } = useContext(UserContext);
+
+  console.log(currentUser);
 
   //Fetch album details on component render
   useEffect(() => {
@@ -25,22 +29,23 @@ const AlbumDetails = () => {
       .catch((err) => console.log("Error: ", err));
   }, []);
 
-  //Fetch Spotify info
+  //   Fetch Spotify info
   //   useEffect(() => {
-  //     fetch("/spotify", {
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         artist: album.artists?.[0]?.name,
-  //         title: album.title,
-  //       }),
-  //     })
+  //     // https://api.spotify.com/v1/search?q=album:nevermind%20artist:nirvana&type=album
+  //     fetch(
+  //       `https://api.spotify.com/v1/search?q=/spotify/${album?.title}%20artist:${album?.artists?.[0]?.name}&type=album`,
+  //       {
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json",
+  //           Authorization:
+  //             "Bearer BQCqG-G63R4y5ewgawiX-qu0V5m-8cabHnRj-ZSnPeRiKIzxD2bO51gzV-NzsqNDVxIUl_iGC7uLFp8u92JPLmamwD2ySa7rVol1XfmK2-819AxauQWXsWreKfmTEJ3YjY0mH9bYdpZPKMIe5UYWBpLMiVLdMmdrG9VZZb1FBB65qaYYpprYstjmQJ8GE8aRYpv8_jJORjgCjQWFUg",
+  //         },
+  //       }
+  //     )
   //       .then((response) => response.json())
   //       .then((data) => {
   //         console.log(data);
-  //         // setAlbum({ ...album, spotify: data.data });
   //       })
   //       //WHAT TO DO WITH ERROR
   //       .catch((err) => console.log("Error: ", err));
@@ -50,7 +55,8 @@ const AlbumDetails = () => {
     fetch(`/add-album`, {
       method: "PATCH",
       body: JSON.stringify({
-        email: user.email,
+        userId: currentUser.userId,
+        userName: currentUser.name,
         albumId: album.id,
         title: album.title,
         artist: album.artists?.[0]?.name,
@@ -84,7 +90,7 @@ const AlbumDetails = () => {
     <main>
       {!album ? (
         <div>
-          <ClipLoader />
+          <img src="/spinnerv1.gif" alt="spinner" />
         </div>
       ) : (
         <AlbumDiv>

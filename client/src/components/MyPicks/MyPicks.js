@@ -35,44 +35,41 @@ const MyPicks = () => {
 
   return (
     <main>
-      <Wrapper>
-        {!picks ? (
-          <>
-            <ClipLoader />
-          </>
-        ) : picks?.length === 0 ? (
-          <h1>Search for an album to add to your Picks!</h1>
-        ) : (
-          <Swiper navigation={true} modules={[Navigation]}>
-            {picks.map((pick) => {
-              return (
-                <StyledSwiperSlide key={pick.albumId}>
-                  <PickDetail pick={pick} />
-                </StyledSwiperSlide>
-              );
-            })}
-          </Swiper>
-        )}
-      </Wrapper>
+      {!picks ? (
+        <>
+          <ClipLoader />
+        </>
+      ) : picks?.length === 0 ? (
+        <h1>Search for an album to add to your Picks!</h1>
+      ) : (
+        <Swiper navigation={true} modules={[Navigation]}>
+          {picks.map((pick) => {
+            return (
+              <StyledSwiperSlide key={pick.albumId}>
+                <PickDetail pick={pick} />
+              </StyledSwiperSlide>
+            );
+          })}
+        </Swiper>
+      )}
     </main>
   );
 };
 
-const Wrapper = styled.div`
-  margin-top: 50px;
-`;
-
 const StyledSwiperSlide = styled(SwiperSlide)`
+  margin-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 20px;
-  width: 200px;
-  /* background-color: #d9b8c4; */
+  /* width: 200px; */
+  height: 500px;
+
+  /* background-color: #94d1d9; */
   border-radius: 10px;
-  padding: 20px;
   /* box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; */
-  color: var(--dark-grey);
+  color: ${({ theme }) => theme.text};
 `;
 
 export default MyPicks;

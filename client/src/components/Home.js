@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useContext } from "react";
 import { UserContext } from "./UserContext";
+import Feed from "./Feed";
 
 //-----------------------//
 //---Home Component---//
@@ -39,7 +40,6 @@ const Home = () => {
             });
         });
   }, [isAuthenticated]);
-  // console.log(user);
 
   return (
     <main>
@@ -57,6 +57,7 @@ const Home = () => {
         ) : (
           <h2>Choose your favorite albums?</h2>
         )}
+        <Feed />
         {/* <ol>
           <li>feed</li>
           <li>recommendations</li>
@@ -70,12 +71,12 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--dark-grey);
+  color: ${({ theme }) => theme.text};
 `;
 
 const Line = styled.div`
   width: 100%;
-  border-top: 3px solid var(--dark-grey);
+  border-top: 3px solid ${({ theme }) => theme.text};
   margin: 15px 0;
 `;
 

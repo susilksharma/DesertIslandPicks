@@ -56,8 +56,13 @@ const getAlbumDetails = async (req, res) => {
 };
 
 const getSpotify = async (req, res) => {
-  const albumInfo = req.body;
+  const albumInfo = req.params.searchValue.replace(/ /g, "%20");
   console.log(albumInfo);
+  try {
+    // https://api.spotify.com/v1/search?q=album:nevermind%20artist:nirvana&type=album
+  } catch (err) {
+    return res.status(500).json({ status: 500, message: err.message });
+  }
 };
 
 module.exports = {

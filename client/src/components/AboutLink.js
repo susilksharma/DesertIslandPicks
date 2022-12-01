@@ -6,11 +6,17 @@ import { Link } from "react-router-dom";
 //-----------------------//
 const AboutLink = () => {
   return (
-    <StyledLink to={"/about"}>
-      <Footprints src="/footprints.png" />
-    </StyledLink>
+    <Wrapper>
+      <StyledLink to={"/about"}>
+        <Footprints src="/footprints.png" />
+      </StyledLink>
+    </Wrapper>
   );
 };
+const Wrapper = styled.div`
+  background: ${({ theme }) => theme.background};
+  width: 100%;
+`;
 
 const StyledLink = styled(Link)`
   background: transparent;
@@ -23,7 +29,7 @@ const Footprints = styled.img`
   position: sticky;
   bottom: 10px;
   right: -10px;
-  opacity: 0.6;
+  opacity: 0.5;
 `;
 
 export default AboutLink;
