@@ -39,7 +39,7 @@ const AlbumDetails = () => {
   //           Accept: "application/json",
   //           "Content-Type": "application/json",
   //           Authorization:
-  //             "Bearer BQCqG-G63R4y5ewgawiX-qu0V5m-8cabHnRj-ZSnPeRiKIzxD2bO51gzV-NzsqNDVxIUl_iGC7uLFp8u92JPLmamwD2ySa7rVol1XfmK2-819AxauQWXsWreKfmTEJ3YjY0mH9bYdpZPKMIe5UYWBpLMiVLdMmdrG9VZZb1FBB65qaYYpprYstjmQJ8GE8aRYpv8_jJORjgCjQWFUg",
+  //             "Bearer ",
   //         },
   //       }
   //     )
