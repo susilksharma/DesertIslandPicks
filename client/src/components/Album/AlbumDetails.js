@@ -3,8 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
-import ClipLoader from "react-spinners/ClipLoader";
-import { useAuth0 } from "@auth0/auth0-react";
 
 //-----------------------------//
 //---Album Details Component---//
@@ -12,14 +10,11 @@ import { useAuth0 } from "@auth0/auth0-react";
 const AlbumDetails = () => {
   const [album, setAlbum] = useState(null);
   const albumId = useParams();
-  const { user } = useAuth0();
   const { currentUser } = useContext(UserContext);
-
-  console.log(currentUser);
 
   //Fetch album details on component render
   useEffect(() => {
-    fetch(`/album/${albumId.albumId}`)
+    fetch(`/albums/${albumId.albumId}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -39,7 +34,7 @@ const AlbumDetails = () => {
   //           Accept: "application/json",
   //           "Content-Type": "application/json",
   //           Authorization:
-  //             "Bearer BQCqG-G63R4y5ewgawiX-qu0V5m-8cabHnRj-ZSnPeRiKIzxD2bO51gzV-NzsqNDVxIUl_iGC7uLFp8u92JPLmamwD2ySa7rVol1XfmK2-819AxauQWXsWreKfmTEJ3YjY0mH9bYdpZPKMIe5UYWBpLMiVLdMmdrG9VZZb1FBB65qaYYpprYstjmQJ8GE8aRYpv8_jJORjgCjQWFUg",
+  //             "Bearer ",
   //         },
   //       }
   //     )
@@ -57,7 +52,7 @@ const AlbumDetails = () => {
       body: JSON.stringify({
         userId: currentUser.userId,
         userName: currentUser.name,
-        albumId: album.id,
+        pickId: album.id,
         title: album.title,
         artist: album.artists?.[0]?.name,
         image: album.images?.[0]?.uri,
@@ -85,21 +80,27 @@ const AlbumDetails = () => {
       });
   };
 
-  console.log("album: ", album);
+  // console.log("album: ", album);
   return (
     <main>
       {!album ? (
-        <div>
+        <LoadingDiv>
           <img src="/spinnerv1.gif" alt="spinner" />
-        </div>
+        </LoadingDiv>
       ) : (
         <AlbumDiv>
-          <ImgDiv onClick={addAlbum}>
-            <img alt={`${album.title} cover`} src={album.images?.[0]?.uri} />
-            <div>
-              <h1>Add To Picks</h1>
-            </div>
-          </ImgDiv>
+          {!album.images[0].uri ? (
+            <LoadingDiv>
+              <img src="/spinnerv1.gif" alt="spinner" />
+            </LoadingDiv>
+          ) : (
+            <ImgDiv onClick={addAlbum}>
+              <img alt={`${album.title} cover`} src={album.images?.[0]?.uri} />
+              <div>
+                <h1>Add To Picks</h1>
+              </div>
+            </ImgDiv>
+          )}
           <InfoDiv>
             <h2>
               <ArtistLink to={`/search/${album.artists?.[0]?.name}`}>
@@ -138,6 +139,12 @@ const AlbumDetails = () => {
     </main>
   );
 };
+
+const LoadingDiv = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
 
 const AlbumDiv = styled.div`
   display: flex;

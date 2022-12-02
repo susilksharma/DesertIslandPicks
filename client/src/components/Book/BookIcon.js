@@ -3,25 +3,28 @@ import { Link } from "react-router-dom";
 import { AiOutlineEye } from "react-icons/ai";
 
 //-----------------------------//
-//---Album Icon Component---//
+//---Book Icon Component---//
 //-----------------------------//
-const AlbumIcon = ({ album }) => {
+const BookIcon = ({ book }) => {
   return (
-    <AlbumDiv to={`/albums/${album.master_id}`}>
+    <BookDiv to={`/books/${book.id}`}>
       <ImgDiv>
-        <img src={album.thumb} alt={`${album.title} album cover`} />
+        <img
+          src={book?.volumeInfo?.imageLinks?.thumbnail}
+          alt={`${book?.volumeInfo?.title} book cover`}
+        />
         <div>
           <figure>
             <AiOutlineEye color="#F8F8F8" size={40} />
           </figure>
         </div>
       </ImgDiv>
-      <h3>{album.title}</h3>
-    </AlbumDiv>
+      <h3>{book?.volumeInfo?.title}</h3>
+    </BookDiv>
   );
 };
 
-const AlbumDiv = styled(Link)`
+const BookDiv = styled(Link)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -76,4 +79,4 @@ const ImgDiv = styled.div`
   }
 `;
 
-export default AlbumIcon;
+export default BookIcon;

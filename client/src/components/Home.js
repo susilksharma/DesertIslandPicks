@@ -53,11 +53,19 @@ const Home = () => {
         </TitleDiv>
         <Line />
         {isAuthenticated ? (
-          <h2>Welcome back, {currentUser.name}</h2>
+          <>
+            <h2>Welcome back, {currentUser.name}</h2>
+            <Feed />
+          </>
         ) : (
-          <h2>Choose your favorite albums?</h2>
+          <ul>
+            <li>1 Island</li>
+            <li>5 Records</li>
+            <li>5 Movies</li>
+            <li>5 Books</li>
+            <li>What are your Picks?</li>
+          </ul>
         )}
-        <Feed />
         {/* <ol>
           <li>feed</li>
           <li>recommendations</li>
@@ -72,6 +80,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   color: ${({ theme }) => theme.text};
+
+  ul {
+    list-style-type: none;
+    font-size: 22px;
+  }
 `;
 
 const Line = styled.div`

@@ -20,7 +20,6 @@ const Profile = () => {
     fetch(`/mypicks/${currentUser.userId}`)
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
         setPicks(data.data);
       });
   }, []);
@@ -56,7 +55,7 @@ const Profile = () => {
         {picks && (
           <PicksDiv>
             <section>
-              <SmallPicks picks={picks} />
+              <SmallPicks user={picks} />
             </section>
           </PicksDiv>
         )}

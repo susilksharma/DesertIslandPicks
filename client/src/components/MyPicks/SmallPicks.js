@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
-import ClipLoader from "react-spinners/ClipLoader";
 import { AiOutlineEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { BsBook, BsMusicNote, BsFilm } from "react-icons/bs";
+import { useState } from "react";
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,21 +17,93 @@ import "swiper/css/navigation";
 //------------------------//
 //---My Picks Component---//
 //------------------------//
-const SmallPicks = ({ picks }) => {
+const SmallPicks = ({ user }) => {
+  const [mediaPicked, setMediaPicked] = useState("album");
+
+  //MAKE BETTER LOGIC FOR THIS
+  const [albumsClicked, setAlbumsClicked] = useState(true);
+  const [moviesClicked, setMoviesClicked] = useState(false);
+  const [booksClicked, setBooksClicked] = useState(false);
+
+  const chooseBooks = (e) => {
+    e.preventDefault();
+
+    setMediaPicked("book");
+    setAlbumsClicked(false);
+    setMoviesClicked(false);
+    setBooksClicked(true);
+  };
+
+  const chooseAlbums = (e) => {
+    e.preventDefault();
+    setMediaPicked("album");
+    setAlbumsClicked(true);
+    setMoviesClicked(false);
+    setBooksClicked(false);
+  };
+
+  const chooseMovies = (e) => {
+    e.preventDefault();
+    setMediaPicked("movie");
+    setAlbumsClicked(false);
+    setMoviesClicked(true);
+    setBooksClicked(false);
+  };
+  console.log(user);
   return (
     <Wrapper>
-      {!picks ? (
+      {!user ? (
         <>
-          <ClipLoader />
+          <LoadingDiv>
+            <img src="/spinnerv1.gif" alt="loading spinner" />
+          </LoadingDiv>{" "}
         </>
-      ) : picks?.length === 0 ? (
-        <h1>Search for an album to add to your Picks!</h1>
+      ) : !user[`${mediaPicked}Picks`] ? (
+        <StyledSwiperSlide>
+          <MediaTypeDiv>
+            <BsMusicNote
+              size={20}
+              color={albumsClicked ? "#ec7274" : "#F8F8F8"}
+              onClick={chooseAlbums}
+            />
+            <BsFilm
+              size={20}
+              color={moviesClicked ? "#ec7274" : "#F8F8F8"}
+              onClick={chooseMovies}
+            />
+            <BsBook
+              size={20}
+              color={booksClicked ? "#ec7274" : "#F8F8F8"}
+              onClick={chooseBooks}
+            />
+          </MediaTypeDiv>
+          <h3>
+            {user.given_name} hasn't Picked any {mediaPicked}s
+          </h3>
+        </StyledSwiperSlide>
       ) : (
         <Swiper navigation={true} modules={[Navigation]}>
-          {picks.map((pick) => {
+          {user[`${mediaPicked}Picks`].map((pick) => {
             return (
-              <StyledSwiperSlide key={pick.albumId}>
-                <Link to={`/album/${pick.albumId}`}>
+              <StyledSwiperSlide key={pick.pickId}>
+                <MediaTypeDiv>
+                  <BsMusicNote
+                    size={20}
+                    color={albumsClicked ? "#ec7274" : "#F8F8F8"}
+                    onClick={chooseAlbums}
+                  />
+                  <BsFilm
+                    size={20}
+                    color={moviesClicked ? "#ec7274" : "#F8F8F8"}
+                    onClick={chooseMovies}
+                  />
+                  <BsBook
+                    size={20}
+                    color={booksClicked ? "#ec7274" : "#F8F8F8"}
+                    onClick={chooseBooks}
+                  />
+                </MediaTypeDiv>
+                <Link to={`/${mediaPicked}s/${pick.pickId}`}>
                   <ImgDiv>
                     <img src={pick?.image} alt={`${pick?.title} album cover`} />
                     <div>
@@ -50,10 +123,25 @@ const SmallPicks = ({ picks }) => {
   );
 };
 
+const LoadingDiv = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
 const Wrapper = styled.div`
   width: 300px;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+`;
+
+const MediaTypeDiv = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  background-color: var(--dark-grey);
+  color: ${({ theme }) => theme.text};
+  padding: 5px;
 `;
 
 const StyledSwiperSlide = styled(SwiperSlide)`

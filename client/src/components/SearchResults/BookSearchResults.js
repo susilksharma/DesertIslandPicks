@@ -2,35 +2,32 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AlbumIcon from "../Album/AlbumIcon";
+import BookIcon from "../Book/BookIcon";
 
-//------------------------------//
-//---Search Results Component---//
-//------------------------------//
-const SearchResults = () => {
-  const [items, setItems] = useState([]);
+//-----------------------------------//
+//---Book Search Results Component---//
+//-----------------------------------//
+const BookSearchResults = () => {
+  const [books, setBooks] = useState([]);
   const { searchValue } = useParams();
-
-  // const token = process.env.TOKEN;
 
   //  ----------BACKEND FETCH----------
   useEffect(() => {
-    fetch(`/search/${searchValue}`)
+    fetch(`/search-books/${searchValue}`)
       .then((response) => response.json())
       .then((data) => {
-        setItems(data.data.results);
+        setBooks(data.data.items);
       })
       .catch((err) => console.log("Error: ", err));
   }, []);
 
-  //   console.log("items: ", items);
+  console.log("books: ", books);
   return (
-    items && (
+    books && (
       <main>
         <ResultsDiv>
-          {items.map((item) => {
-            if (item.thumb && item.catno && item.master_id)
-              return <AlbumIcon key={item.id} album={item} />;
+          {books.map((book) => {
+            return <BookIcon key={book.id} book={book} />;
           })}
         </ResultsDiv>
       </main>
@@ -46,4 +43,4 @@ const ResultsDiv = styled.div`
   gap: 30px;
 `;
 
-export default SearchResults;
+export default BookSearchResults;

@@ -4,9 +4,14 @@ import GlobalStyles from "./GlobalStyles";
 import Header from "./Header/Header";
 import Profile from "./Profile/Profile";
 import Explore from "./Explore";
+import Error from "./Error";
 import MyPicks from "./MyPicks/MyPicks";
-import SearchResults from "./SearchResults/SearchResults";
-import AlbumDetails from "./Album//AlbumDetail";
+import AlbumSearchResults from "./SearchResults/AlbumSearchResults";
+import BookSearchResults from "./SearchResults/BookSearchResults";
+import MovieSearchResults from "./SearchResults/MovieSearchResults";
+import AlbumDetails from "./Album/AlbumDetails";
+import BookDetails from "./Book/BookDetails";
+import MovieDetails from "./Movies/MovieDetails";
 import About from "./About";
 import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
@@ -34,10 +39,24 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/error" element={<Error />} />
           <Route path="/mypicks" element={<MyPicks />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/search/:searchValue" element={<SearchResults />} />
-          <Route path="/album/:albumId" element={<AlbumDetails />} />
+          <Route
+            path="/search-albums/:searchValue"
+            element={<AlbumSearchResults />}
+          />
+          <Route
+            path="/search-books/:searchValue"
+            element={<BookSearchResults />}
+          />
+          <Route
+            path="/search-movies/:searchValue"
+            element={<MovieSearchResults />}
+          />
+          <Route path="/albums/:albumId" element={<AlbumDetails />} />
+          <Route path="/books/:bookId" element={<BookDetails />} />
+          <Route path="/movies/:movieId" element={<MovieDetails />} />
         </Routes>
         <AboutLink />
       </ThemeProvider>

@@ -5,27 +5,27 @@ import { UserContext } from "./UserContext";
 
 const Feed = () => {
   const { currentUser } = useContext(UserContext);
-  const [picks, setPicks] = useState([]);
+  const [userPicks, setUserPicks] = useState([]);
 
   useEffect(() => {
     fetch(`/feed/${currentUser.userId}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log("feed:", data);
-        setPicks(data.data);
+        setUserPicks(data.data);
       });
   }, []);
 
   return (
     <Wrapper>
-      {picks.length === 0 ? (
-        <div>
-          <img src="/spinnerv1.gif" />
-        </div>
+      {userPicks.length === 0 ? (
+        <LoadingDiv>
+          <img src="/spinnerv1.gif" alt="Loading Spinner" />
+        </LoadingDiv>
       ) : (
         <FeedDiv>
-          {picks.map((pick) => {
-            return <SmallPicks key={pick.main_release} picks={pick} />;
+          {userPicks.map((user) => {
+            return <SmallPicks key={user._id} user={user} />;
           })}
         </FeedDiv>
       )}
@@ -49,6 +49,12 @@ const Wrapper = styled.div`
       margin-right: 10px;
     }
   }
+`;
+
+const LoadingDiv = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 const FeedDiv = styled.div`

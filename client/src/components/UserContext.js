@@ -9,14 +9,9 @@ export const UserContext = createContext();
 // exporting the provider that is wrapped around the app in index
 export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = usePersistedState([], "current-user");
-  const [mode, setMode] = usePersistedState("light", "mode");
 
   const receiveCurrentUser = (user) => {
     setCurrentUser(user);
-  };
-
-  const receiveMode = (mode) => {
-    setMode(mode);
   };
 
   return (
@@ -24,8 +19,6 @@ export const UserProvider = ({ children }) => {
       value={{
         currentUser,
         receiveCurrentUser,
-        mode,
-        receiveMode,
       }}
     >
       {children}

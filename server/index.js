@@ -7,16 +7,30 @@ const port = 8000;
 const {
   searchAlbum,
   getAlbumDetails,
+  addAlbum,
   getSpotify,
+  getAlbumPicks,
 } = require("./handlers/MusicHandlers");
 
 //Movie Handlers
-const { searchMovies } = require("./handlers/MovieHandlers");
+const {
+  searchMovies,
+  getMovieDetails,
+  addMovie,
+  getMoviePicks,
+} = require("./handlers/MovieHandlers");
+
+//Book Handlers
+const {
+  searchBooks,
+  addBook,
+  getBookDetails,
+  getBookPicks,
+} = require("./handlers/BookHandlers");
 
 //User Handlers
 const {
   addUser,
-  addAlbum,
   getMyPicks,
   addReview,
   deletePick,
@@ -29,18 +43,28 @@ express()
   .use(morgan("tiny"))
 
   //Music
-  .get("/search/:searchValue", searchAlbum)
-  .get("/album/:albumId", getAlbumDetails)
+  .get("/search-albums/:searchValue", searchAlbum)
+  .get("/albums/:albumId", getAlbumDetails)
+  .patch("/add-album", addAlbum)
+  .get("/picks/albums/:userId", getAlbumPicks)
   .get("/spotify/:searchValue", getSpotify)
 
   //Movie
-  .get("search-movie/:searchValue", searchMovies)
+  .get("/search-movies/:searchValue", searchMovies)
+  .get("/movies/:movieId", getMovieDetails)
+  .patch("/add-movie", addMovie)
+  .get("/picks/movies/:userId", getMoviePicks)
+
+  //Books
+  .get("/search-books/:searchValue", searchBooks)
+  .get("/books/:bookId", getBookDetails)
+  .patch("/add-book", addBook)
+  .get("/picks/books/:userId", getBookPicks)
 
   //User
   .get("/mypicks/:userId", getMyPicks)
   .get("/feed/:userId", getFeed)
   .post("/add-user", addUser)
-  .patch("/add-album", addAlbum)
   .patch("/add-review", addReview)
   .patch("/delete-pick", deletePick)
 

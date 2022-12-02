@@ -22,7 +22,7 @@ const ReviewPopUp = ({ pick }) => {
     fetch(`/add-review/`, {
       method: "PATCH",
       body: JSON.stringify({
-        albumId: pickId,
+        pickId: pickId,
         review: newReview,
         userId: currentUser.userId,
       }),
@@ -63,7 +63,7 @@ const ReviewPopUp = ({ pick }) => {
           <Header> {pick.review === "" ? "Add Review" : "Edit Review"} </Header>
           <ReviewForm
             onSubmit={(e) => {
-              submitReview(e, pick.albumId);
+              submitReview(e, pick.pickId);
               window.location.reload();
             }}
           >
