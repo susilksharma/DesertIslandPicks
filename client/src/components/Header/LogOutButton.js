@@ -24,6 +24,7 @@ const ButtonLogOut = styled.button`
   font-weight: 400;
   :hover {
     color: #fc8888;
+    transition: all 0.2s ease-in-out;
   }
 `;
 

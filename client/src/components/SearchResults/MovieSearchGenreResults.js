@@ -2,33 +2,34 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import BookIcon from "../Book/BookIcon";
+import MovieIcon from "../Movies/MovieIcon";
 
-//-----------------------------------//
-//---Book Search Results Component---//
-//-----------------------------------//
-const BookSearchResults = () => {
-  const [books, setBooks] = useState([]);
-  const { searchValue } = useParams();
+//------------------------------------//
+//---Movie Search Results Component---//
+//------------------------------------//
+const MovieSearchGenreResults = () => {
+  const [items, setItems] = useState([]);
+  const { genreId } = useParams();
   const navigate = useNavigate();
 
   //  ----------BACKEND FETCH----------
   useEffect(() => {
-    fetch(`/search-book/${searchValue}`)
+    fetch(`/search-movie-genre/${genreId}`)
       .then((response) => response.json())
       .then((data) => {
-        setBooks(data.data.items);
+        // console.log(data);
+        setItems(data.data.results);
       })
       .catch((err) => navigate("/error"));
   }, []);
 
-  console.log("books: ", books);
+  console.log("items: ", items);
   return (
-    books && (
+    items && (
       <main>
         <ResultsDiv>
-          {books.map((book) => {
-            return <BookIcon key={book.id} book={book} />;
+          {items.map((item) => {
+            return <MovieIcon key={item.backdrop_path} movie={item} />;
           })}
         </ResultsDiv>
       </main>
@@ -44,4 +45,4 @@ const ResultsDiv = styled.div`
   gap: 30px;
 `;
 
-export default BookSearchResults;
+export default MovieSearchGenreResults;

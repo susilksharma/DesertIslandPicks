@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineSearch } from "react-icons/ai";
-import { BsBook, BsMusicNote, BsFilm } from "react-icons/bs";
+import { AiOutlineSearch, AiOutlineClose } from "react-icons/ai";
+import MediaPicker from "../Picks/MediaPicker";
 
 //--------------------------//
 //---Search Bar Component---//
@@ -10,90 +10,105 @@ import { BsBook, BsMusicNote, BsFilm } from "react-icons/bs";
 const SearchBar = () => {
   const [searchvalue, setSearchValue] = useState("");
   const navigate = useNavigate();
-  const [mediaPicked, setMediaPicked] = useState("albums");
+  const [mediaPicked, setMediaPicked] = useState("album");
 
   //MAKE BETTER LOGIC FOR THIS
-  const [albumsClicked, setAlbumsClicked] = useState(true);
-  const [moviesClicked, setMoviesClicked] = useState(false);
-  const [booksClicked, setBooksClicked] = useState(false);
+  const [albumsclicked, setAlbumsclicked] = useState(1);
+  const [moviesclicked, setMoviesclicked] = useState(0);
+  const [booksclicked, setBooksclicked] = useState(0);
 
   const chooseBooks = (e) => {
     e.preventDefault();
-    setMediaPicked("books");
-    setAlbumsClicked(false);
-    setMoviesClicked(false);
-    setBooksClicked(true);
+    setMediaPicked("book");
+    setAlbumsclicked(0);
+    setMoviesclicked(0);
+    setBooksclicked(1);
   };
 
   const chooseAlbums = (e) => {
     e.preventDefault();
-    setMediaPicked("albums");
-    setAlbumsClicked(true);
-    setMoviesClicked(false);
-    setBooksClicked(false);
+    setMediaPicked("album");
+    setAlbumsclicked(1);
+    setMoviesclicked(0);
+    setBooksclicked(0);
   };
 
   const chooseMovies = (e) => {
     e.preventDefault();
-    setMediaPicked("movies");
-    setAlbumsClicked(false);
-    setMoviesClicked(true);
-    setBooksClicked(false);
+    setMediaPicked("movie");
+    setAlbumsclicked(0);
+    setMoviesclicked(1);
+    setBooksclicked(0);
   };
 
-  const [toggleSearch, setToggleSearch] = useState(false);
+  const [togglesearch, settogglesearch] = useState(0);
 
   const toggleVisibility = () => {
-    setToggleSearch(!toggleSearch);
+    settogglesearch(!togglesearch);
   };
 
   return (
-    <SearchForm>
-      <AiOutlineSearch
-        color="#F8F8F8"
+    <>
+      <SearchIcon
         size={24}
         onClick={toggleVisibility}
-        style={{ display: toggleSearch ? "none" : "block" }}
+        togglesearch={togglesearch}
       />
-      <SearchDiv>
-        <SearchInput
-          placeholder={`Search ${mediaPicked}`}
-          onChange={(ev) => {
-            setSearchValue(ev.target.value);
-          }}
-          onKeyDown={(ev) => {
-            if (ev.key === "Enter") {
-              navigate(`/search-${mediaPicked}/${searchvalue}`);
-            }
-          }}
-          style={{
-            display: !toggleSearch ? "none" : "block",
-          }}
-          autoFocus={toggleSearch ? true : false}
-        />{" "}
-        <MediaTypeDiv style={{ display: !toggleSearch ? "none" : "block" }}>
-          <BsMusicNote
+      <SearchForm togglesearch={togglesearch}>
+        <SearchDiv togglesearch={togglesearch}>
+          <CloseSearch size={48} onClick={toggleVisibility} />
+          <SearchInput
+            placeholder={`Search ${mediaPicked}`}
+            onChange={(ev) => {
+              setSearchValue(ev.target.value);
+            }}
+            onKeyDown={(ev) => {
+              if (ev.key === "Enter") {
+                navigate(`/search-${mediaPicked}/${searchvalue}`);
+              }
+            }}
+            autoFocus={togglesearch === 1 ? true : false}
+          />{" "}
+          <MediaPicker
+            albumsclicked={albumsclicked}
+            chooseAlbums={chooseAlbums}
+            moviesclicked={moviesclicked}
+            chooseMovies={chooseMovies}
+            booksclicked={booksclicked}
+            chooseBooks={chooseBooks}
             size={20}
-            color={albumsClicked ? "#ec7274" : "#F8F8F8"}
-            onClick={chooseAlbums}
           />
-          <BsFilm
-            size={20}
-            color={moviesClicked ? "#ec7274" : "#F8F8F8"}
-            onClick={chooseMovies}
-          />
-          <BsBook
-            size={20}
-            color={booksClicked ? "#ec7274" : "#F8F8F8"}
-            onClick={chooseBooks}
-          />
-        </MediaTypeDiv>
-      </SearchDiv>
-    </SearchForm>
+        </SearchDiv>
+      </SearchForm>
+    </>
   );
 };
 
-const SearchForm = styled.form``;
+const SearchIcon = styled(AiOutlineSearch)`
+  color: var(--white);
+  display: ${(props) => (props.togglesearch ? "none" : "block")};
+
+  :hover {
+    color: #ec7274;
+    transition: all 0.2s ease-in-out;
+  }
+`;
+
+const CloseSearch = styled(AiOutlineClose)`
+  color: var(--white);
+
+  :hover {
+    color: #ec7274;
+    transition: all 0.2s ease-in-out;
+  }
+`;
+
+const SearchForm = styled.form`
+  width: ${(props) => (props.togglesearch ? "300px" : "0px")};
+  opacity: ${(props) => (props.togglesearch ? "1" : "0")};
+  transition: width 0.5s ease-in-out, opacity 1s ease-in-out;
+  overflow: hidden;
+`;
 
 const SearchInput = styled.input`
   border-radius: 5px;
@@ -109,14 +124,10 @@ const SearchInput = styled.input`
 `;
 
 const SearchDiv = styled.div`
-  display: flex;
+  display: ${(props) => (props.togglesearch ? "flex" : "none")};
   flex-direction: row;
-`;
-
-const MediaTypeDiv = styled.div`
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
+  align-items: center;
+  gap: 10px;
 `;
 
 export default SearchBar;

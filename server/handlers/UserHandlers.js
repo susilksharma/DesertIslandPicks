@@ -54,7 +54,7 @@ const addUser = async (req, res) => {
 };
 
 //Get current user's picks, based on userId
-const getMyPicks = async (req, res) => {
+const getProfile = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   const userId = req.params.userId;
 
@@ -73,63 +73,6 @@ const getMyPicks = async (req, res) => {
       : res.status(400).json({ status: 400, message: error });
   } catch (error) {
     res.status(500).json({ status: 500, message: error });
-  }
-};
-
-//Add/edit review for pick
-const addReview = async (req, res) => {
-  const client = new MongoClient(MONGO_URI, options);
-
-  await client.connect();
-
-  const reviewInfo = req.body;
-  try {
-    const db = client.db("dipDb");
-
-    await db
-      .collection("users")
-      .findOneAndUpdate(
-        { userId: reviewInfo.userId, "albumPicks.pickId": reviewInfo.pickId },
-        { $set: { "albumPicks.$.review": reviewInfo.review } }
-      );
-
-    res
-      .status(200)
-      .json({ status: 200, data: reviewInfo, message: "Success!" });
-  } catch (error) {
-    res.status(400).json({ status: 400, message: error });
-  }
-};
-
-//Delete User's Pick
-const deletePick = async (req, res) => {
-  const client = new MongoClient(MONGO_URI, options);
-
-  await client.connect();
-
-  const pickToDelete = req.body;
-  // console.group(pickToDelete);
-  try {
-    const db = client.db("dipDb");
-
-    const deletePick = await db.collection("users").findOneAndUpdate(
-      { userId: pickToDelete.userId },
-      {
-        $pull: {
-          albumPicks: {
-            pickId: pickToDelete.pickId,
-          },
-        },
-      }
-    );
-
-    deletePick
-      ? res
-          .status(200)
-          .json({ status: 200, data: pickToDelete, message: "Pick Deleted!" })
-      : res.status(400).json({ status: 400, message: "Please Try Again" });
-  } catch (error) {
-    res.status(400).json({ status: 400, message: error });
   }
 };
 
@@ -161,10 +104,62 @@ const getFeed = async (req, res) => {
   }
 };
 
+const getPopularPicks = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const userId = req.params.userId;
+
+  try {
+    const db = client.db("dipDb");
+
+    //Find random User picked Album
+    const albumPicks = await db.collection("allAlbumPicks").find().toArray();
+
+    const filteredAlbums = await albumPicks.filter((pick) => {
+      return pick.userId !== userId;
+    });
+
+    const randomAlbum = await filteredAlbums[
+      Math.floor(Math.random() * filteredAlbums.length)
+    ];
+
+    //Find random User picked Movie
+    const moviePicks = await db.collection("allMoviePicks").find().toArray();
+
+    const filteredMovies = await moviePicks.filter((pick) => {
+      return pick.userId !== userId;
+    });
+
+    const randomMovie = await filteredMovies[
+      Math.floor(Math.random() * filteredMovies.length)
+    ];
+
+    //Find random User picked Movie
+    const bookPicks = await db.collection("allBookPicks").find().toArray();
+
+    const filteredBooks = await bookPicks.filter((pick) => {
+      return pick.userId !== userId;
+    });
+
+    const randomBook = await filteredBooks[
+      Math.floor(Math.random() * filteredBooks.length)
+    ];
+
+    randomAlbum && randomMovie && randomBook
+      ? res.status(200).json({
+          status: 200,
+          data: [randomAlbum, randomMovie, randomBook],
+          message: "User Info!",
+        })
+      : res.status(400).json({ status: 400, message: error });
+  } catch (error) {
+    res.status(500).json({ status: 500, message: error });
+  }
+};
+
 module.exports = {
   addUser,
-  getMyPicks,
-  addReview,
-  deletePick,
+  getProfile,
   getFeed,
+  getPopularPicks,
 };

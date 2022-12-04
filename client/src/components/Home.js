@@ -39,7 +39,7 @@ const Home = () => {
               name: data.data.given_name,
             });
         });
-  }, [isAuthenticated]);
+  }, [user]);
 
   return (
     <main>
@@ -66,10 +66,6 @@ const Home = () => {
             <li>What are your Picks?</li>
           </ul>
         )}
-        {/* <ol>
-          <li>feed</li>
-          <li>recommendations</li>
-        </ol> */}
       </Wrapper>
     </main>
   );
@@ -80,6 +76,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   color: ${({ theme }) => theme.text};
+  transition: none;
 
   ul {
     list-style-type: none;

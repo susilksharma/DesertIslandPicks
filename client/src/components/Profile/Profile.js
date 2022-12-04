@@ -1,66 +1,78 @@
 import styled from "styled-components";
-import { useAuth0 } from "@auth0/auth0-react";
-import SmallPicks from "../MyPicks/SmallPicks";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../UserContext";
-import { AiFillEdit } from "react-icons/ai";
+import SmallPicks from "../Picks/SmallPicks";
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
 
 //-----------------------//
 //---Profile Component---//
 //-----------------------//
 const Profile = () => {
-  const { user, isAuthenticated } = useAuth0();
+  const userId = useParams();
   const [genre, setGenre] = useState("");
   const [favArtist, setFavArtist] = useState("");
-  const [picks, setPicks] = useState(null);
-  const { currentUser } = useContext(UserContext);
+  const [favAuthor, setFavAuthor] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
 
   //LOGIC TO GET SPECIFIC USER PICKS NEEDS TO CHANGE
   useEffect(() => {
-    fetch(`/mypicks/${currentUser.userId}`)
+    fetch(`/profile/${userId.userId}`)
       .then((response) => response.json())
       .then((data) => {
-        setPicks(data.data);
+        setUserInfo(data.data);
       });
   }, []);
 
   return (
-    isAuthenticated && (
-      <main>
-        <HeaderDiv>
-          <UserDiv>
-            {user?.picture && (
-              <ProfileImg src={user.picture} alt={user?.name} />
-            )}
+    <main>
+      {!userInfo ? (
+        <LoadingDiv>
+          <img src="/spinnerv1.gif" alt="loading spinner" />
+        </LoadingDiv>
+      ) : (
+        <>
+          <HeaderDiv>
+            <UserDiv>
+              <ProfileImg src={userInfo?.picture} alt={userInfo.name} />
+              <div>
+                <h1>{userInfo.name}</h1>
+                <button>Edit Profile</button>
+              </div>
+            </UserDiv>
             <div>
-              <h1>{user.name}</h1>
-              <button>Edit Profile</button>
+              <h3>
+                Favorite Movie Genre:
+                <FavLink to={"/"}>
+                  <span> Thriller</span>
+                </FavLink>
+              </h3>
+              <h3>
+                Favorite Musical Artist:
+                <FavLink to={"/search-album/the%20velvet%20underground?"}>
+                  <span> The Velvet Underground</span>
+                </FavLink>{" "}
+              </h3>
+              <h3>
+                Favorite Author:
+                <FavLink to={"/search-book/Joseph%20Heller"}>
+                  <span> Paul Auster</span>
+                </FavLink>{" "}
+              </h3>
             </div>
-          </UserDiv>
-          <div>
-            <h3>
-              Favorite Genre:
-              <span> Rock</span>
-              <AiFillEdit />
-            </h3>
-            <h3>
-              Favorite Artist:
-              <span> Oasis</span>
-              <AiFillEdit />
-            </h3>
-          </div>
-        </HeaderDiv>
-        <Line />
-        <h2>My Picks:</h2>
-        {picks && (
+          </HeaderDiv>
+          <Line />
           <PicksDiv>
-            <section>
-              <SmallPicks user={picks} />
-            </section>
+            <div>
+              <section>
+                <SmallPicks user={userInfo} />
+              </section>
+              <h2>My Picks</h2>
+            </div>
+            <div>Recent Activity</div>
           </PicksDiv>
-        )}
-      </main>
-    )
+          <Line />
+        </>
+      )}
+    </main>
   );
 };
 
@@ -111,6 +123,12 @@ const UserDiv = styled.div`
   }
 `;
 
+const LoadingDiv = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
 const ProfileImg = styled.img`
   border-radius: 50%;
   height: 120px;
@@ -121,7 +139,17 @@ const PicksDiv = styled.div`
 
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+`;
+
+const FavLink = styled(Link)`
+  text-decoration: underline;
+  color: var(--dark-grey);
+  text-decoration-thickness: 1.5px;
+
+  :hover {
+    text-decoration-thickness: 3px;
+  }
 `;
 
 export default Profile;

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import MovieIcon from "../Movies/MovieIcon";
 
 //------------------------------------//
@@ -10,16 +10,17 @@ import MovieIcon from "../Movies/MovieIcon";
 const MovieSearchResults = () => {
   const [items, setItems] = useState([]);
   const { searchValue } = useParams();
+  const navigate = useNavigate();
 
   //  ----------BACKEND FETCH----------
   useEffect(() => {
-    fetch(`/search-movies/${searchValue}`)
+    fetch(`/search-movie/${searchValue}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        setItems(data.data.Search);
+        // console.log(data);
+        setItems(data.data.results);
       })
-      .catch((err) => console.log("Error: ", err));
+      .catch((err) => navigate("/error"));
   }, []);
 
   console.log("items: ", items);
@@ -28,7 +29,7 @@ const MovieSearchResults = () => {
       <main>
         <ResultsDiv>
           {items.map((item) => {
-            return <MovieIcon key={item.imdbId} movie={item} />;
+            return <MovieIcon key={item.backdrop_path} movie={item} />;
           })}
         </ResultsDiv>
       </main>

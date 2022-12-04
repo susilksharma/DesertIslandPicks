@@ -7,7 +7,7 @@ import { AiOutlineEye } from "react-icons/ai";
 //-----------------------------//
 const AlbumIcon = ({ album }) => {
   return (
-    <AlbumDiv to={`/albums/${album.master_id}`}>
+    <AlbumDiv to={`/album/${album.master_id}`}>
       <ImgDiv>
         <img src={album.thumb} alt={`${album.title} album cover`} />
         <div>

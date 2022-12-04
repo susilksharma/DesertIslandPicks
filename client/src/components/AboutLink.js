@@ -30,6 +30,10 @@ const Footprints = styled.img`
   bottom: 10px;
   right: -10px;
   opacity: 0.5;
+  :hover {
+    filter: opacity(0.8);
+    transition: all 0.5s ease-in-out;
+  }
 `;
 
 export default AboutLink;

@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
+import { useAuth0 } from "@auth0/auth0-react";
+import { AiFillGoogleCircle } from "react-icons/ai";
 
 //----------------------------//
 //---Book Details Component---//
@@ -11,51 +13,54 @@ const BookDetails = () => {
   const [book, setBook] = useState(null);
   const bookId = useParams();
   const { currentUser } = useContext(UserContext);
+  const { isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
 
   // Fetch album details on component render
   useEffect(() => {
-    fetch(`/books/${bookId.bookId}`)
+    fetch(`/book/${bookId.bookId}`)
       .then((response) => response.json())
       .then((data) => {
         setBook(data.data.items[0]);
       })
       //WHAT TO DO WITH ERROR
-      .catch((err) => console.log("Error: ", err));
+      .catch((err) => navigate("/error"));
   }, []);
 
   const addBook = () => {
-    fetch(`/add-book`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        userId: currentUser.userId,
-        userName: currentUser.name,
-        pickId: book.id,
-        title: book.volumeInfo?.title,
-        artist: book.volumeInfo?.authors?.[0],
-        image: book.volumeInfo?.imageLinks?.thumbnail,
-        genre: book.volumeInfo?.categories?.[0],
-        year: book.volumeInfo?.publishedDate,
-        publisher: book.volumeInfo?.publisher,
-      }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === 200) {
-          window.alert("Book added to Picks!");
-        } else {
-          window.alert(data.message);
-        }
+    isAuthenticated &&
+      fetch(`/add-book`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          pickId: book.id,
+          title: book.volumeInfo?.title,
+          artist: book.volumeInfo?.authors?.[0],
+          image: book.volumeInfo?.imageLinks?.thumbnail,
+          genre: book.volumeInfo?.categories?.[0],
+          year: book.volumeInfo?.publishedDate,
+          publisher: book.volumeInfo?.publisher,
+          link: book.volumeInfo?.infoLink,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       })
-      .catch((error) => {
-        window.alert("Sorry, please try again.");
-      });
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === 200) {
+            window.alert("Book added to Picks!");
+          } else {
+            window.alert(data.message);
+          }
+        })
+        .catch((error) => {
+          window.alert("Sorry, please try again.");
+        });
   };
 
-  // console.log("album: ", album);
   return (
     <main>
       {!book ? (
@@ -64,22 +69,32 @@ const BookDetails = () => {
         </LoadingDiv>
       ) : (
         <BookDiv>
-          <ImgDiv onClick={addBook}>
+          <ImgDiv onClick={addBook} isAuthenticated={isAuthenticated}>
             <img
               alt={`${book.volumeInfo?.title} cover`}
               src={book.volumeInfo?.imageLinks?.thumbnail}
             />
             <div>
-              <h1>Add To Picks</h1>
+              {isAuthenticated ? (
+                <h1>Add To Picks</h1>
+              ) : (
+                <h1>Sign In To Add To Picks</h1>
+              )}
             </div>
           </ImgDiv>
           <InfoDiv>
-            <h2>
-              <ArtistLink to={`/search-book/${book.volumeInfo?.authors?.[0]}`}>
-                {book.volumeInfo?.authors?.[0]}
-              </ArtistLink>{" "}
-              - {book.volumeInfo?.title}
-            </h2>
+            {book.volumeInfo?.authors ? (
+              <h2>
+                <ArtistLink
+                  to={`/search-book/${book.volumeInfo?.authors?.[0]}`}
+                >
+                  {book.volumeInfo?.authors?.[0]}
+                </ArtistLink>{" "}
+                - {book.volumeInfo?.title}
+              </h2>
+            ) : (
+              <h2>{book.volumeInfo?.title}</h2>
+            )}
             <h3>
               <span>
                 {book.volumeInfo?.categories?.[0]}/{book.volumeInfo?.publisher}
@@ -88,6 +103,12 @@ const BookDetails = () => {
               {book.volumeInfo?.publishedDate}
             </h3>
             <Description>{book.volumeInfo?.description}</Description>
+            <div>
+              <h3>Google Books:</h3>
+              <a href={book.volumeInfo?.infoLink}>
+                <AiFillGoogleCircle size={30} />
+              </a>
+            </div>
           </InfoDiv>
         </BookDiv>
       )}
@@ -122,13 +143,21 @@ const BookDiv = styled.div`
   p {
     font-size: 0.8em;
   }
+
+  a {
+    color: var(--dark-grey);
+    :hover {
+      opacity: 0.8;
+      transition: all 0.4 ease-in-out;
+    }
+  }
 `;
 
 const ImgDiv = styled.div`
   position: relative;
 
   img {
-    height: 550px;
+    height: 400px;
     width: auto;
   }
 
@@ -138,7 +167,7 @@ const ImgDiv = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100%;
+    height: 400px;
     width: 100%;
     transition: 0.5s ease;
     background-color: #464646;
@@ -147,7 +176,7 @@ const ImgDiv = styled.div`
 
   :hover div {
     opacity: 0.7;
-    cursor: pointer;
+    cursor: ${(props) => (props.isAuthenticated ? "pointer" : "not-allowed")};
   }
 
   h1 {
@@ -171,12 +200,17 @@ const InfoDiv = styled.div`
 const Description = styled.div`
   display: flex;
   flex-flow: column wrap;
-  height: 200px;
+  height: fit-content;
 `;
 
 const ArtistLink = styled(Link)`
   text-decoration: underline;
   color: var(--dark-grey);
+  text-decoration-thickness: 1.5px;
+
+  :hover {
+    text-decoration-thickness: 3px;
+  }
 `;
 
 export default BookDetails;

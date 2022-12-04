@@ -1,53 +1,30 @@
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { AiOutlineEye } from "react-icons/ai";
+import styled from "styled-components";
 
-//-----------------------------//
-//---Book Icon Component---//
-//-----------------------------//
-const BookIcon = ({ book }) => {
+const ImageSmall = ({ mediaPicked, pick }) => {
   return (
-    <BookDiv to={`/book/${book.id}`}>
+    <Link to={`/${mediaPicked}/${pick.pickId}`}>
       <ImgDiv>
-        <img
-          src={book?.volumeInfo?.imageLinks?.thumbnail}
-          alt={`${book?.volumeInfo?.title} book cover`}
-        />
+        <img src={pick?.image} alt={`${pick?.title} album cover`} />
         <div>
           <figure>
             <AiOutlineEye color="#F8F8F8" size={40} />
           </figure>
         </div>
       </ImgDiv>
-      <h3>{book?.volumeInfo?.title}</h3>
-    </BookDiv>
+    </Link>
   );
 };
-
-const BookDiv = styled(Link)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200px;
-  /* background-color: #818fb5; */
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  text-decoration: none;
-
-  h3 {
-    text-align: center;
-    margin-top: 10px;
-    color: var(--dark-grey);
-  }
-`;
 
 const ImgDiv = styled.div`
   position: relative;
 
   img {
-    width: 100%;
+    height: 160px;
+    width: auto;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    /* margin: 20px; */
   }
 
   div {
@@ -65,6 +42,7 @@ const ImgDiv = styled.div`
 
   :hover div {
     opacity: 0.7;
+    transition: all 0.4s ease-in-out;
     cursor: pointer;
   }
 
@@ -79,4 +57,4 @@ const ImgDiv = styled.div`
   }
 `;
 
-export default BookIcon;
+export default ImageSmall;

@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 //-----------------------------//
 //---Review Pop Up Component---//
 //-----------------------------//
-const ReviewPopUp = ({ pick }) => {
-  const [newReview, setNewReview] = useState(null);
+const ReviewPopUp = ({ pick, mediaPicked }) => {
+  const [newReview, setNewReview] = useState("");
   const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const ReviewPopUp = ({ pick }) => {
 
   const submitReview = (e, pickId) => {
     e.preventDefault();
-    fetch(`/add-review/`, {
+    fetch(`/${mediaPicked}-review`, {
       method: "PATCH",
       body: JSON.stringify({
         pickId: pickId,
@@ -33,15 +33,11 @@ const ReviewPopUp = ({ pick }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.status !== 400) {
-          window.alert("Review added!");
-          return navigate("/mypicks");
-        } else {
-          window.alert("Sorry, please  again.");
-        }
+        window.alert(data.message);
       })
       .catch((error) => {
-        window.alert("Sorry, please try again.");
+        // navigate("/error");
+        window.alert("Sorry, please ty again.", error);
       });
   };
 

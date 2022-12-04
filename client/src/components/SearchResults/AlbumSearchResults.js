@@ -15,7 +15,7 @@ const AlbumSearchResults = () => {
 
   //  ----------BACKEND FETCH----------
   useEffect(() => {
-    fetch(`/search-albums/${searchValue}`)
+    fetch(`/search-album/${searchValue}`)
       .then((response) => response.json())
       .then((data) => {
         setItems(data.data.results);

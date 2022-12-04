@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useAuth0 } from "@auth0/auth0-react";
 
 //-----------------------------//
 //---Album Details Component---//
@@ -11,17 +12,19 @@ const AlbumDetails = () => {
   const [album, setAlbum] = useState(null);
   const albumId = useParams();
   const { currentUser } = useContext(UserContext);
+  const { isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
 
   //Fetch album details on component render
   useEffect(() => {
-    fetch(`/albums/${albumId.albumId}`)
+    fetch(`/album/${albumId.albumId}`)
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
+        console.log(data);
         setAlbum(data.data);
       })
       //WHAT TO DO WITH ERROR
-      .catch((err) => console.log("Error: ", err));
+      .catch((err) => navigate("/error"));
   }, []);
 
   //   Fetch Spotify info
@@ -47,37 +50,38 @@ const AlbumDetails = () => {
   //   }, [album]);
 
   const addAlbum = () => {
-    fetch(`/add-album`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        userId: currentUser.userId,
-        userName: currentUser.name,
-        pickId: album.id,
-        title: album.title,
-        artist: album.artists?.[0]?.name,
-        image: album.images?.[0]?.uri,
-        genre: album.genres?.[0],
-        style: album.styles?.[0],
-        year: album?.year,
-        video: album.videos?.[0]?.uri.replace("watch?v=", "embed/"),
-        main_release: album.main_release,
-      }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === 200) {
-          window.alert("Album added to Picks!");
-        } else {
-          window.alert(data.message);
-        }
+    isAuthenticated &&
+      fetch(`/add-album`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          pickId: album.id,
+          title: album.title,
+          artist: album.artists?.[0]?.name,
+          image: album.images?.[0]?.uri,
+          genre: album.genres?.[0],
+          style: album.styles?.[0],
+          year: album?.year,
+          video: album.videos?.[0]?.uri.replace("watch?v=", "embed/"),
+          main_release: album.main_release,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       })
-      .catch((error) => {
-        window.alert("Sorry, please try again.");
-      });
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === 200) {
+            window.alert("Album added to Picks!");
+          } else {
+            window.alert(data.message);
+          }
+        })
+        .catch((error) => {
+          window.alert("Sorry, please try again.");
+        });
   };
 
   // console.log("album: ", album);
@@ -94,16 +98,20 @@ const AlbumDetails = () => {
               <img src="/spinnerv1.gif" alt="spinner" />
             </LoadingDiv>
           ) : (
-            <ImgDiv onClick={addAlbum}>
+            <ImgDiv onClick={addAlbum} isAuthenticated={isAuthenticated}>
               <img alt={`${album.title} cover`} src={album.images?.[0]?.uri} />
               <div>
-                <h1>Add To Picks</h1>
+                {isAuthenticated ? (
+                  <h1>Add To Picks</h1>
+                ) : (
+                  <h1>Sign In To Add To Picks</h1>
+                )}{" "}
               </div>
             </ImgDiv>
           )}
           <InfoDiv>
             <h2>
-              <ArtistLink to={`/search/${album.artists?.[0]?.name}`}>
+              <ArtistLink to={`/search-album/${album.artists?.[0]?.name}`}>
                 {album.artists?.[0]?.name}
               </ArtistLink>{" "}
               - {album.title}
@@ -116,13 +124,16 @@ const AlbumDetails = () => {
               {album?.year}
             </h3>
             <Tracklist>
-              {album.tracklist?.map((track) => {
-                return (
-                  <p key={track?.position}>
-                    {track?.position}. {track?.title}
-                  </p>
-                );
-              })}
+              {/*pagination here? */}
+              {album.tracklist
+                ?.map((track) => {
+                  return (
+                    <p key={track?.position}>
+                      {track?.position}. {track?.title}
+                    </p>
+                  );
+                })
+                .slice(0, 26)}
             </Tracklist>
             <iframe
               src={album.videos?.[0]?.uri.replace("watch?v=", "embed/")}
@@ -183,7 +194,7 @@ const ImgDiv = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100%;
+    height: 550px;
     width: 100%;
     transition: 0.5s ease;
     background-color: #464646;
@@ -192,7 +203,8 @@ const ImgDiv = styled.div`
 
   :hover div {
     opacity: 0.7;
-    cursor: pointer;
+    cursor: ${(props) => (props.isAuthenticated ? "pointer" : "not-allowed")};
+    transition: all 0.4s ease-in-out;
   }
 
   h1 {
@@ -217,11 +229,17 @@ const Tracklist = styled.div`
   display: flex;
   flex-flow: column wrap;
   height: 200px;
+  max-width: 300px;
 `;
 
 const ArtistLink = styled(Link)`
   text-decoration: underline;
   color: var(--dark-grey);
+  text-decoration-thickness: 1.5px;
+
+  :hover {
+    text-decoration-thickness: 3px;
+  }
 `;
 
 export default AlbumDetails;

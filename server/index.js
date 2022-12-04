@@ -10,6 +10,8 @@ const {
   addAlbum,
   getSpotify,
   getAlbumPicks,
+  addAlbumReview,
+  deleteAlbum,
 } = require("./handlers/MusicHandlers");
 
 //Movie Handlers
@@ -18,6 +20,11 @@ const {
   getMovieDetails,
   addMovie,
   getMoviePicks,
+  getCrew,
+  addMovieReview,
+  searchMoviesByGenre,
+  searchMoviesByDirector,
+  deleteMovie,
 } = require("./handlers/MovieHandlers");
 
 //Book Handlers
@@ -26,15 +33,16 @@ const {
   addBook,
   getBookDetails,
   getBookPicks,
+  addBookReview,
+  deleteBook,
 } = require("./handlers/BookHandlers");
 
 //User Handlers
 const {
   addUser,
-  getMyPicks,
-  addReview,
-  deletePick,
+  getProfile,
   getFeed,
+  getPopularPicks,
 } = require("./handlers/UserHandlers");
 
 express()
@@ -43,30 +51,39 @@ express()
   .use(morgan("tiny"))
 
   //Music
-  .get("/search-albums/:searchValue", searchAlbum)
-  .get("/albums/:albumId", getAlbumDetails)
+  .get("/search-album/:searchValue", searchAlbum)
+  .get("/album/:albumId", getAlbumDetails)
   .patch("/add-album", addAlbum)
-  .get("/picks/albums/:userId", getAlbumPicks)
+  .patch("/album-review", addAlbumReview)
+  .patch("/delete-album", deleteAlbum)
+  .get("/picks/album/:userId", getAlbumPicks)
   .get("/spotify/:searchValue", getSpotify)
 
   //Movie
-  .get("/search-movies/:searchValue", searchMovies)
-  .get("/movies/:movieId", getMovieDetails)
+  .get("/search-movie/:searchValue", searchMovies)
+  .get("/search-movie-genre/:genreId", searchMoviesByGenre)
+  .get("/search-movie-director/:directorId", searchMoviesByDirector)
+  .get("/movie/:movieId", getMovieDetails)
+  .get("/movie-crew/:movieId", getCrew)
   .patch("/add-movie", addMovie)
-  .get("/picks/movies/:userId", getMoviePicks)
+  .patch("/delete-movie", deleteMovie)
+
+  .patch("/movie-review", addMovieReview)
+  .get("/picks/movie/:userId", getMoviePicks)
 
   //Books
-  .get("/search-books/:searchValue", searchBooks)
-  .get("/books/:bookId", getBookDetails)
+  .get("/search-book/:searchValue", searchBooks)
+  .get("/book/:bookId", getBookDetails)
   .patch("/add-book", addBook)
-  .get("/picks/books/:userId", getBookPicks)
+  .patch("/delete-book", deleteBook)
+  .patch("/book-review", addBookReview)
+  .get("/picks/book/:userId", getBookPicks)
 
   //User
-  .get("/mypicks/:userId", getMyPicks)
+  .get("/profile/:userId", getProfile)
   .get("/feed/:userId", getFeed)
+  .get("/picks-popular/:userId", getPopularPicks)
   .post("/add-user", addUser)
-  .patch("/add-review", addReview)
-  .patch("/delete-pick", deletePick)
 
   .listen(port, () => {
     console.log(`Listening on port ${port}`);

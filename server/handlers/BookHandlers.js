@@ -83,7 +83,7 @@ const addBook = async (req, res) => {
         .status(400)
         .json({ status: 400, data: userInfo, message: "Picks full" });
     }
-    //Otherwise, add book to picks
+    //Otherwise, add book to user picks and all picks
     else if (checkBook === undefined) {
       await db.collection("users").updateOne(
         { userId: bookInfo.userId },
@@ -92,10 +92,15 @@ const addBook = async (req, res) => {
             bookPicks: {
               ...bookInfo,
               review: "",
+              isLiked: false,
+              comment: "",
             },
           },
         }
       );
+      await db
+        .collection("allBookPicks")
+        .insertOne({ ...bookInfo, type: "book" });
       res
         .status(200)
         .json({ status: 200, data: userInfo, message: "Book added!" });
@@ -127,9 +132,69 @@ const getBookPicks = async (req, res) => {
   }
 };
 
+//Add/edit review for pick
+const addBookReview = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const reviewInfo = req.body;
+  try {
+    const db = client.db("dipDb");
+
+    await db
+      .collection("users")
+      .findOneAndUpdate(
+        { userId: reviewInfo.userId, "bookPicks.pickId": reviewInfo.pickId },
+        { $set: { "bookPicks.$.review": reviewInfo.review } }
+      );
+
+    return res
+      .status(200)
+      .json({ status: 200, data: reviewInfo, message: "Review Updated!" });
+  } catch (error) {
+    return res.status(500).json({ status: 500, message: error });
+  }
+};
+
+//Delete User's Pick
+const deleteBook = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const pickToDelete = req.body;
+  // console.group(pickToDelete);
+
+  try {
+    const db = client.db("dipDb");
+
+    const deletePick = await db.collection("users").findOneAndUpdate(
+      { userId: pickToDelete.userId },
+      {
+        $pull: {
+          bookPicks: {
+            pickId: pickToDelete.pickId,
+          },
+        },
+      }
+    );
+
+    deletePick
+      ? res
+          .status(200)
+          .json({ status: 200, data: pickToDelete, message: "Pick Deleted!" })
+      : res.status(400).json({ status: 400, message: "Please Try Again" });
+  } catch (error) {
+    res.status(400).json({ status: 400, message: error });
+  }
+};
+
 module.exports = {
   searchBooks,
   getBookDetails,
   addBook,
   getBookPicks,
+  addBookReview,
+  deleteBook,
 };

@@ -5,12 +5,15 @@ import LogOutButton from "./LogOutButton";
 import { useAuth0 } from "@auth0/auth0-react";
 import SearchBar from "./SearchBar";
 import { BsFillMoonFill } from "react-icons/bs";
+import { UserContext } from "../UserContext";
+import { useContext } from "react";
 
 //----------------------//
 //---Header Component---//
 //----------------------//
 const Header = ({ themeToggler }) => {
   const { isLoading, error, isAuthenticated } = useAuth0();
+  const { currentUser } = useContext(UserContext);
 
   return (
     <HeaderDiv>
@@ -18,21 +21,25 @@ const Header = ({ themeToggler }) => {
         <HomeLogo src="/logo.png" style={{ background: "transparent" }} />
       </Link>
 
-      <BsFillMoonFill
-        onClick={themeToggler}
-        color="#F8F8F8"
-        size={22}
-        style={{ cursor: "pointer" }}
-      />
-      <PageLink
-        to={`/mypicks/`}
-        style={{ visibility: !isAuthenticated && "hidden" }}
-      >
-        My Picks
-      </PageLink>
+      <MoonDiv>
+        <BsFillMoonFill
+          onClick={themeToggler}
+          color="${({ theme }) => theme.moon}"
+          size={22}
+          style={{ cursor: "pointer" }}
+        />
+      </MoonDiv>
+      {currentUser && (
+        <PageLink
+          to={`/picks/user/${currentUser.userId}`}
+          style={{ visibility: !isAuthenticated && "hidden" }}
+        >
+          My Picks
+        </PageLink>
+      )}
 
       <PageLink
-        to={"/profile"}
+        to={`/profile/${currentUser.userId}`}
         style={{ visibility: !isAuthenticated && "hidden" }}
       >
         Profile
@@ -62,6 +69,15 @@ const HeaderDiv = styled.div`
   box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
 `;
 
+const MoonDiv = styled.div`
+  color: ${({ theme }) => theme.moon};
+
+  :hover {
+    color: #8ba9f0;
+    transition: all 0.2s ease-in-out;
+  }
+`;
+
 const PageLink = styled(NavLink)`
   font-size: 16px;
   font-weight: 400;
@@ -70,7 +86,8 @@ const PageLink = styled(NavLink)`
   cursor: pointer;
 
   :hover {
-    color: #8ba9f0;
+    color: #ec7274;
+    transition: all 0.2s ease-in-out;
   }
 
   &.active {

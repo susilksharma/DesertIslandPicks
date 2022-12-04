@@ -105,10 +105,16 @@ const addAlbum = async (req, res) => {
             albumPicks: {
               ...albumInfo,
               review: "",
+              isLiked: false,
+              comment: "",
             },
           },
         }
       );
+      await db
+        .collection("allAlbumPicks")
+        .insertOne({ ...albumInfo, type: "album" });
+
       res
         .status(200)
         .json({ status: 200, data: userInfo, message: "Album added!" });
@@ -150,10 +156,71 @@ const getSpotify = async (req, res) => {
   }
 };
 
+//Add/edit review for pick
+const addAlbumReview = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const reviewInfo = req.body;
+  try {
+    const db = client.db("dipDb");
+
+    const writeReview = await db
+      .collection("users")
+      .findOneAndUpdate(
+        { userId: reviewInfo.userId, "albumPicks.pickId": reviewInfo.pickId },
+        { $set: { "albumPicks.$.review": reviewInfo.review } }
+      );
+    writeReview
+      ? res
+          .status(200)
+          .json({ status: 200, data: reviewInfo, message: "Review Updated!!" })
+      : res.status(400).json({ status: 400, message: "Please try again" });
+  } catch (error) {
+    res.status(500).json({ status: 500, message: error });
+  }
+};
+
+//Delete User's Pick
+const deleteAlbum = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const pickToDelete = req.body;
+  // console.group(pickToDelete);
+
+  try {
+    const db = client.db("dipDb");
+
+    const deletePick = await db.collection("users").findOneAndUpdate(
+      { userId: pickToDelete.userId },
+      {
+        $pull: {
+          albumPicks: {
+            pickId: pickToDelete.pickId,
+          },
+        },
+      }
+    );
+
+    deletePick
+      ? res
+          .status(200)
+          .json({ status: 200, data: pickToDelete, message: "Pick Deleted!" })
+      : res.status(400).json({ status: 400, message: "Please Try Again" });
+  } catch (error) {
+    res.status(400).json({ status: 400, message: error });
+  }
+};
+
 module.exports = {
   getAlbumDetails,
   searchAlbum,
   getSpotify,
   getAlbumPicks,
   addAlbum,
+  addAlbumReview,
+  deleteAlbum,
 };

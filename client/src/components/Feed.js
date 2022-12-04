@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect, useContext } from "react";
-import SmallPicks from "./MyPicks/SmallPicks";
+import SmallPicks from "./Picks/SmallPicks";
 import { UserContext } from "./UserContext";
 
 const Feed = () => {

@@ -7,16 +7,19 @@ import { AiOutlineEye } from "react-icons/ai";
 //-----------------------------//
 const MovieIcon = ({ movie }) => {
   return (
-    <BookDiv to={`/movies/${movie.imdbID}`}>
+    <BookDiv to={`/movie/${movie.id}`}>
       <ImgDiv>
-        <img src={movie?.Poster} alt={`${movie?.Title} book cover`} />
+        <img
+          src={`https://image.tmdb.org/t/p/original/${movie?.poster_path}`}
+          alt={`${movie?.title} poster`}
+        />
         <div>
           <figure>
             <AiOutlineEye color="#F8F8F8" size={40} />
           </figure>
         </div>
       </ImgDiv>
-      <h3>{movie?.Title}</h3>
+      <h3>{movie?.title}</h3>
     </BookDiv>
   );
 };
