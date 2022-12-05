@@ -5,14 +5,14 @@ import { useState, useContext } from "react";
 import { UserContext } from "../UserContext";
 import { BiCommentDetail } from "react-icons/bi";
 
-//-----------------------------//
+//------------------------------//
 //---Comment Pop Up Component---//
-//-----------------------------//
+//------------------------------//
 const CommentPopUp = ({ pick, mediaPicked }) => {
   const [comment, setComment] = useState("");
   const { currentUser } = useContext(UserContext);
-  console.log(pick);
 
+  //Add like to database (toggle isLiked boolean key/value for pick)
   const likePick = () => {
     fetch(`/add-like`, {
       method: "PATCH",
@@ -38,6 +38,7 @@ const CommentPopUp = ({ pick, mediaPicked }) => {
       });
   };
 
+  //Change state of comment and then send to database
   const handleChange = (e) => {
     setComment(e.target.value);
   };

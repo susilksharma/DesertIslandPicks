@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MovieIcon from "../Movies/MovieIcon";
 
 //------------------------------------//
@@ -10,17 +10,15 @@ import MovieIcon from "../Movies/MovieIcon";
 const MovieSearchResults = () => {
   const [items, setItems] = useState([]);
   const { searchValue } = useParams();
-  const navigate = useNavigate();
 
-  //  ----------BACKEND FETCH----------
+  //Fetch search results from backend and set in state
   useEffect(() => {
     fetch(`/search-movie/${searchValue}`)
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
         setItems(data.data.results);
       })
-      .catch((err) => navigate("/error"));
+      .catch((err) => console.error("Error: ", err));
   }, []);
 
   console.log("items: ", items);

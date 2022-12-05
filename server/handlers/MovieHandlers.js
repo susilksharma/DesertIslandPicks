@@ -1,5 +1,6 @@
 const request = require("superagent");
 
+//MongoDb Info
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 const { MONGO_URI } = process.env;
@@ -10,6 +11,7 @@ const options = {
 
 const { MOVIE_KEY } = process.env;
 
+//Search by Movie title
 const searchMovies = async (req, res) => {
   const searchValue = req.params.searchValue;
 
@@ -32,6 +34,7 @@ const searchMovies = async (req, res) => {
   }
 };
 
+//Search by Movie genre
 const searchMoviesByGenre = async (req, res) => {
   const genreId = req.params.genreId;
 
@@ -52,6 +55,7 @@ const searchMoviesByGenre = async (req, res) => {
   }
 };
 
+//Search by movie director
 const searchMoviesByDirector = async (req, res) => {
   const directorId = req.params.directorId;
 
@@ -76,6 +80,7 @@ const searchMoviesByDirector = async (req, res) => {
   }
 };
 
+//Get Detailed info by movie ID
 const getMovieDetails = async (req, res) => {
   const movieId = req.params.movieId;
   try {
@@ -117,6 +122,7 @@ const getMovieDetails = async (req, res) => {
   }
 };
 
+//Add Movie pick to db
 const addMovie = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
@@ -188,6 +194,8 @@ const addMovie = async (req, res) => {
     res.status(500).json({ status: 500, message: err });
   }
 };
+
+//Get Picked Movies by User ID
 const getMoviePicks = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   const userId = req.params.userId;
@@ -254,7 +262,6 @@ const deleteMovie = async (req, res) => {
   await client.connect();
 
   const pickToDelete = req.body;
-  // console.group(pickToDelete);
 
   try {
     const db = client.db("dipDb");

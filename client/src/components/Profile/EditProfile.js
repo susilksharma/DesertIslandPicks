@@ -1,15 +1,16 @@
 import Popup from "reactjs-popup";
 import styled from "styled-components";
-import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
+import { AiFillCloseCircle } from "react-icons/ai";
 import { useState, useContext } from "react";
 import { UserContext } from "../UserContext";
-import EditProfileField from "./EditProfileField";
 
-//-----------------------------//
-//---Review Pop Up Component---//
-//-----------------------------//
+//----------------------------//
+//---Edit Profile Component---//
+//----------------------------//
 const EditProfile = ({ userInfo }) => {
   const { currentUser } = useContext(UserContext);
+
+  //Set state for Profile Info to Edit
   const [formData, setFormData] = useState({
     given_name: userInfo.given_name,
     family_name: userInfo.family_name,
@@ -26,6 +27,7 @@ const EditProfile = ({ userInfo }) => {
     });
   };
 
+  //Patch Edited Profile inifo to database
   const submitEdit = (e, formData) => {
     e.preventDefault();
     fetch(`/profile-edit`, {

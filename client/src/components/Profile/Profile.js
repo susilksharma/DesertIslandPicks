@@ -17,6 +17,7 @@ const Profile = () => {
   const [recent, setRecent] = useState(null);
   const { currentUser } = useContext(UserContext);
 
+  //Receive Profile & Recent Activity info and set in state
   useEffect(() => {
     fetch(`/profile/${userId.userId}`)
       .then((response) => response.json())
@@ -58,7 +59,7 @@ const Profile = () => {
                 </FavLink>
               </h3>
               <h3>
-                Favorite Musical Artist:
+                Favorite Musician:
                 <FavLink to={`/search-album/${userInfo?.favMusicalArtist}`}>
                   <span> {userInfo?.favMusicalArtist}</span>
                 </FavLink>{" "}
@@ -79,6 +80,7 @@ const Profile = () => {
               </section>
             </div>
             <ActivityDiv>
+              {/*Map Recent Activity */}
               {recent && userId.userId === currentUser.userId && (
                 <>
                   <h3>Recent Activity</h3>
@@ -126,6 +128,7 @@ const HeaderDiv = styled.div`
     font-size: 20px;
     font-style: normal;
     font-weight: bold;
+    text-align: right;
 
     span {
       font-size: 18px;

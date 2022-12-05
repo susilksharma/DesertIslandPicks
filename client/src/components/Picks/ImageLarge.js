@@ -1,6 +1,9 @@
 import { AiOutlineEye } from "react-icons/ai";
 import styled from "styled-components";
 
+//---------------------------------//
+//---Large Image Picks Component---//
+//---------------------------------//
 const ImageLarge = ({ pick }) => {
   return (
     <ImgDiv>

@@ -1,6 +1,7 @@
 require("dotenv").config();
 const request = require("superagent");
 
+//MongoDb info
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 const { MONGO_URI } = process.env;
@@ -8,6 +9,7 @@ const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
+
 //Authorization token & package for Discogs API
 const Discogs = require("disconnect").Client;
 const { TOKEN } = process.env;
@@ -137,6 +139,7 @@ const addAlbum = async (req, res) => {
   }
 };
 
+//Find Picked albums by user Id
 const getAlbumPicks = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   const userId = req.params.userId;

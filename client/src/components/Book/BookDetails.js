@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
-import { AiFillGoogleCircle } from "react-icons/ai";
+import BookInfo from "./BookInfo";
 
 //----------------------------//
 //---Book Details Component---//
@@ -14,7 +14,6 @@ const BookDetails = () => {
   const bookId = useParams();
   const { currentUser } = useContext(UserContext);
   const { isAuthenticated } = useAuth0();
-  const navigate = useNavigate();
 
   // Fetch album details on component render
   useEffect(() => {
@@ -24,12 +23,12 @@ const BookDetails = () => {
         console.log(data.data);
         setBook(data.data.items[0]);
       })
-      //WHAT TO DO WITH ERROR
       .catch((err) => {
         console.error("Error, ", err);
       });
   }, []);
 
+  //Add Book to Pick database
   const addBook = () => {
     isAuthenticated &&
       fetch(`/add-book`, {
@@ -60,7 +59,7 @@ const BookDetails = () => {
           }
         })
         .catch((error) => {
-          window.alert("Sorry, please try again.");
+          console.error("Error, ", error);
         });
   };
 
@@ -85,37 +84,7 @@ const BookDetails = () => {
               )}
             </div>
           </ImgDiv>
-          <InfoDiv>
-            {book?.volumeInfo?.authors ? (
-              <h2>
-                <ArtistLink
-                  to={`/search-book/${book?.volumeInfo?.authors?.[0]}`}
-                >
-                  {book?.volumeInfo?.authors?.[0]}
-                </ArtistLink>{" "}
-                - {book?.volumeInfo?.title}
-              </h2>
-            ) : (
-              <h2>{book?.volumeInfo?.title}</h2>
-            )}
-            <h3>
-              <span>
-                {book?.volumeInfo?.categories?.[0]}/{book.volumeInfo?.publisher}
-              </span>
-            </h3>
-            <h3>
-              {book?.volumeInfo?.pageCount} pages
-              {", "}
-              {book?.volumeInfo?.publishedDate.slice(0, 4)}
-            </h3>
-            <Description>{book?.volumeInfo?.description}</Description>
-            <div>
-              <h3>Google Books:</h3>
-              <a href={book?.volumeInfo?.infoLink}>
-                <AiFillGoogleCircle size={30} />
-              </a>
-            </div>
-          </InfoDiv>
+          <BookInfo book={book} />
         </BookDiv>
       )}
     </main>

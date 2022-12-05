@@ -1,5 +1,6 @@
 const request = require("superagent");
 
+//MongoDB variables
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 const { MONGO_URI } = process.env;
@@ -10,6 +11,7 @@ const options = {
 
 const { BOOK_KEY } = process.env;
 
+//Search for Books
 const searchBooks = async (req, res) => {
   const searchValue = req.params.searchValue;
 
@@ -37,6 +39,7 @@ const searchBooks = async (req, res) => {
   }
 };
 
+//Get Detailed Book Info by Book Id
 const getBookDetails = async (req, res) => {
   const bookId = req.params.bookId;
   try {
@@ -56,6 +59,7 @@ const getBookDetails = async (req, res) => {
   }
 };
 
+//Add Book Pick to DB
 const addBook = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
@@ -128,6 +132,7 @@ const addBook = async (req, res) => {
   }
 };
 
+//Retrieve picked Books by User ID
 const getBookPicks = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   const userId = req.params.userId;
@@ -194,7 +199,6 @@ const deleteBook = async (req, res) => {
   await client.connect();
 
   const pickToDelete = req.body;
-  // console.group(pickToDelete);
 
   try {
     const db = client.db("dipDb");

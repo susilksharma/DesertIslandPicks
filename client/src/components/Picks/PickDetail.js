@@ -35,7 +35,7 @@ const PickDetail = ({ pick, mediaPicked }) => {
   return (
     <>
       {!pick ? (
-        <h1>nada</h1>
+        <h1>No Pick made</h1>
       ) : (
         <>
           {pick.artist ? (

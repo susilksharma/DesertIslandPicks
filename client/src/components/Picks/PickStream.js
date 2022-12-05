@@ -3,6 +3,9 @@ import { ImFilm } from "react-icons/im";
 import { AiFillGoogleCircle } from "react-icons/ai";
 import styled from "styled-components";
 
+//-------------------------------//
+//---Picks Streaming Component---//
+//-------------------------------//
 const PickStream = ({ mediaPicked, pick }) => {
   return (
     <>

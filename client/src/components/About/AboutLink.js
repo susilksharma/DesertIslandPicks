@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-//-----------------------//
+//--------------------------//
 //---About Link Component---//
-//-----------------------//
+//--------------------------//
 const AboutLink = () => {
   return (
     <Wrapper>
@@ -25,10 +25,9 @@ const StyledLink = styled(Link)`
 const Footprints = styled.img`
   background: transparent;
   height: 50px;
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  bottom: 10px;
-  right: -10px;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
   opacity: 0.5;
   :hover {
     filter: opacity(0.8);

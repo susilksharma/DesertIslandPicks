@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { useState, useContext } from "react";
 import { UserContext } from "../UserContext";
-import { useNavigate } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
 import { MdEdit } from "react-icons/md";
 

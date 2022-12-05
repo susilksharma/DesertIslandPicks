@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import { AiOutlineEye } from "react-icons/ai";
 import styled from "styled-components";
 
+//---------------------------------//
+//---Small Image Picks Component---//
+//---------------------------------//
 const ImageSmall = ({ mediaPicked, pick }) => {
   return (
     <Link to={`/${mediaPicked}/${pick.pickId}`}>

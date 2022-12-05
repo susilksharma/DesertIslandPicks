@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PickDetail from "./PickDetail";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
-import MediaPicker from "./MediaPicker";
+import MediaSelection from "./MediaSelection";
 import { useParams, Link } from "react-router-dom";
 
 // Import Swiper React components, modules and styles
@@ -19,12 +19,14 @@ const Picks = () => {
   const [picks, setPicks] = useState(null);
   const { userId } = useParams();
   const { currentUser } = useContext(UserContext);
-  const [mediaPicked, setMediaPicked] = useState("album");
 
+  //Set state for media chosen (1/0 instead of true/false because of issues passing booleans to DOM)
+  const [mediaPicked, setMediaPicked] = useState("album");
   const [albumsclicked, setAlbumsclicked] = useState(1);
   const [moviesclicked, setMoviesclicked] = useState(0);
   const [booksclicked, setBooksclicked] = useState(0);
-  console.log(picks);
+
+  //Fetch user's picks from backend, depending on media chosen
   useEffect(() => {
     fetch(`/picks/${mediaPicked}/${userId}`)
       .then((response) => response.json())
@@ -33,6 +35,7 @@ const Picks = () => {
       });
   }, [mediaPicked, userId]);
 
+  //Functions for setting media state
   const chooseBooks = (e) => {
     e.preventDefault();
     setMediaPicked("book");
@@ -75,7 +78,7 @@ const Picks = () => {
           }}
         >
           <StyledSwiperSlide>
-            <MediaPicker
+            <MediaSelection
               albumsclicked={albumsclicked}
               chooseAlbums={chooseAlbums}
               moviesclicked={moviesclicked}
@@ -109,7 +112,7 @@ const Picks = () => {
             {picks.map((pick, i) => {
               return (
                 <StyledSwiperSlide key={pick.albumId}>
-                  <MediaPicker
+                  <MediaSelection
                     albumsclicked={albumsclicked}
                     chooseAlbums={chooseAlbums}
                     moviesclicked={moviesclicked}

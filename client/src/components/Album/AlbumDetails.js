@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
+import AlbumInfo from "./AlbumInfo";
 
 //-----------------------------//
 //---Album Details Component---//
@@ -26,6 +27,7 @@ const AlbumDetails = () => {
       .catch((err) => navigate("/error"));
   }, []);
 
+  //Add album to database
   const addAlbum = () => {
     isAuthenticated &&
       fetch(`/add-album`, {
@@ -57,13 +59,13 @@ const AlbumDetails = () => {
           }
         })
         .catch((error) => {
-          window.alert("Sorry, please try again.");
+          console.error("Error,", error);
         });
   };
 
-  // console.log("album: ", album);
   return (
     <main>
+      {/*Check album state is properly set before rendering  */}
       {!album ? (
         <LoadingDiv>
           <img src="/spinnerv1.gif" alt="spinner" />
@@ -86,47 +88,7 @@ const AlbumDetails = () => {
               </div>
             </ImgDiv>
           )}
-          <InfoDiv>
-            <h2>
-              <ArtistLink
-                to={`/search-album/${album.artists?.[0]?.name.replace(
-                  / *\([^)]*\) */g,
-                  ""
-                )}`}
-              >
-                {album.artists?.[0]?.name.replace(/ *\([^)]*\) */g, "")}
-              </ArtistLink>{" "}
-              - {album.title}
-            </h2>
-            <h3>
-              <span>
-                {album.genres?.[0]}/{album.styles?.[0]}
-              </span>
-              {", "}
-              {album?.year}
-            </h3>
-            <Tracklist>
-              {/*pagination here? */}
-              {album.tracklist
-                ?.map((track) => {
-                  return (
-                    <p key={track?.position}>
-                      {track?.position}. {track?.title}
-                    </p>
-                  );
-                })
-                .slice(0, 26)}
-            </Tracklist>
-            <iframe
-              src={album.videos?.[0]?.uri.replace("watch?v=", "embed/")}
-              frameBorder="0"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
-              title="video"
-              width="400px"
-              height="220px"
-            />
-          </InfoDiv>
+          <AlbumInfo album={album} />
         </AlbumDiv>
       )}
     </main>
@@ -198,29 +160,6 @@ const ImgDiv = styled.div`
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     text-align: center;
-  }
-`;
-
-const InfoDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-const Tracklist = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  height: 200px;
-  max-width: 300px;
-`;
-
-const ArtistLink = styled(Link)`
-  text-decoration: underline;
-  color: var(--dark-grey);
-  text-decoration-thickness: 1.5px;
-
-  :hover {
-    text-decoration-thickness: 3px;
   }
 `;
 

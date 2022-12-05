@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import BookIcon from "../Book/BookIcon";
 
 //-----------------------------------//
@@ -10,16 +10,15 @@ import BookIcon from "../Book/BookIcon";
 const BookSearchResults = () => {
   const [books, setBooks] = useState([]);
   const { searchValue } = useParams();
-  const navigate = useNavigate();
 
-  //  ----------BACKEND FETCH----------
+  //Fetch search results from backend and set in state
   useEffect(() => {
     fetch(`/search-book/${searchValue}`)
       .then((response) => response.json())
       .then((data) => {
         setBooks(data.data);
       })
-      .catch((err) => navigate("/error"));
+      .catch((err) => console.error("Error: ", err));
   }, []);
 
   console.log("books: ", books);

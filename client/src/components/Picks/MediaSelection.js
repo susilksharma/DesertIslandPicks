@@ -2,7 +2,10 @@ import styled from "styled-components";
 
 import { BsBook, BsMusicNote, BsFilm } from "react-icons/bs";
 
-const MediaPicker = ({
+//-------------------------------//
+//---Media Selection Component---//
+//-------------------------------//
+const MediaSelection = ({
   albumsclicked,
   chooseAlbums,
   moviesclicked,
@@ -69,4 +72,4 @@ const MediaTypeDiv = styled.div`
   border-radius: 10px 10px 0 0;
 `;
 
-export default MediaPicker;
+export default MediaSelection;

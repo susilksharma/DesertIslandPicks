@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import ImageSmall from "./ImageSmall";
-import MediaPicker from "./MediaPicker";
+import MediaSelection from "./MediaSelection";
 import { UserContext } from "../UserContext";
 import { useContext } from "react";
 
@@ -13,14 +13,14 @@ import { Navigation } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 
-//------------------------//
-//---My Picks Component---//
-//------------------------//
+//---------------------------//
+//---Small Picks Component---//
+//---------------------------//
 const SmallPicks = ({ user }) => {
   const [mediaPicked, setMediaPicked] = useState("album");
   const { currentUser } = useContext(UserContext);
 
-  //MAKE BETTER LOGIC FOR THIS
+  //States and functions to set which media user is searching and icon display
   const [albumsclicked, setAlbumsclicked] = useState(1);
   const [moviesclicked, setMoviesclicked] = useState(0);
   const [booksclicked, setBooksclicked] = useState(0);
@@ -49,6 +49,7 @@ const SmallPicks = ({ user }) => {
     setMoviesclicked(1);
     setBooksclicked(0);
   };
+
   return (
     <Wrapper>
       {!user ? (
@@ -57,31 +58,36 @@ const SmallPicks = ({ user }) => {
             <img src="/spinnerv1.gif" alt="loading spinner" />
           </LoadingDiv>{" "}
         </>
-      ) : !user[`${mediaPicked}Picks`] ? (
-        <StyledSwiperSlide>
-          <MediaPicker
-            albumsclicked={albumsclicked}
-            chooseAlbums={chooseAlbums}
-            moviesclicked={moviesclicked}
-            chooseMovies={chooseMovies}
-            booksclicked={booksclicked}
-            chooseBooks={chooseBooks}
-            size={20}
-          />
-          {currentUser.userId !== user.userId ? (
-            <h3>
-              {user.given_name} hasn't picked any {mediaPicked}s yet
-            </h3>
-          ) : (
-            <h3>You haven't picked any {mediaPicked}s yet</h3>
-          )}
-        </StyledSwiperSlide>
+      ) : !user[`${mediaPicked}Picks`] ||
+        user[`${mediaPicked}Picks`].length === 0 ? (
+        {
+          /*Conditional render if user hasn't picked any of this type of media yet */
+        }(
+          <StyledSwiperSlide>
+            <MediaSelection
+              albumsclicked={albumsclicked}
+              chooseAlbums={chooseAlbums}
+              moviesclicked={moviesclicked}
+              chooseMovies={chooseMovies}
+              booksclicked={booksclicked}
+              chooseBooks={chooseBooks}
+              size={20}
+            />
+            {currentUser.userId !== user.userId ? (
+              <h3>
+                {user.given_name} hasn't picked any {mediaPicked}s yet
+              </h3>
+            ) : (
+              <h3>You haven't picked any {mediaPicked}s yet</h3>
+            )}
+          </StyledSwiperSlide>
+        )
       ) : (
         <Swiper navigation={true} modules={[Navigation]}>
           {user[`${mediaPicked}Picks`].map((pick) => {
             return (
               <StyledSwiperSlide key={pick.pickId}>
-                <MediaPicker
+                <MediaSelection
                   albumsclicked={albumsclicked}
                   chooseAlbums={chooseAlbums}
                   moviesclicked={moviesclicked}
@@ -132,6 +138,7 @@ const StyledSwiperSlide = styled(SwiperSlide)`
   border-radius: 10px;
   color: var(--dark-grey);
   overflow: hidden;
+  min-height: 300px;
 `;
 
 const UserLink = styled(Link)`

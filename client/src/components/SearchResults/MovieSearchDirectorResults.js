@@ -1,18 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MovieIcon from "../Movies/MovieIcon";
 
-//------------------------------------//
-//---Movie Search Results Component---//
-//------------------------------------//
+//------------------------------------------------//
+//---Movie Search Results By Director Component---//
+//------------------------------------------------//
 const MovieSearchDirectorResults = () => {
   const [items, setItems] = useState([]);
   const { directorId } = useParams();
-  const navigate = useNavigate();
 
-  //  ----------BACKEND FETCH----------
+  //Fetch search results from backend and set in state
   useEffect(() => {
     fetch(`/search-movie-director/${directorId}`)
       .then((response) => response.json())
@@ -20,7 +19,7 @@ const MovieSearchDirectorResults = () => {
         console.log(data.data.crew);
         setItems(data.data.crew);
       })
-      .catch((err) => navigate("/error"));
+      .catch((err) => console.error("Error: ", err));
   }, []);
 
   console.log("items: ", items);

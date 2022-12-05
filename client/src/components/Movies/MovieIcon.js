@@ -2,9 +2,9 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { AiOutlineEye } from "react-icons/ai";
 
-//-----------------------------//
+//--------------------------//
 //---Movie Icon Component---//
-//-----------------------------//
+//--------------------------//
 const MovieIcon = ({ movie }) => {
   return (
     <MovieDiv to={`/movie/${movie.id}`}>

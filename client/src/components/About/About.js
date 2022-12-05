@@ -1,17 +1,17 @@
 import styled from "styled-components";
 
 //-----------------------//
-//---About Component---//
+//---About Component-----//
 //-----------------------//
 const About = () => {
   return (
     <main>
       <Wrapper>
         <div>
-          <h1>About</h1>
+          <h1>About Desert Island Picks</h1>
           <h3>
-            Designed by Susil Sharma for Concordia Bootcamps in a fugue state,
-            ©2022.
+            Designed by Susil Sharma, in a fugue state, for Concordia Bootcamps.
+            ©2022
           </h3>
           <iframe
             width="600"
@@ -37,7 +37,8 @@ const Wrapper = styled.div`
 
   h3 {
     margin-top: 20px;
-    font-size: 17px;
+    font-size: 16px;
+    font-style: normal;
   }
   iframe {
     margin-top: 20px;

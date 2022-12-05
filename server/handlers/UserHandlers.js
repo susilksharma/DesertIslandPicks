@@ -1,8 +1,8 @@
 const request = require("superagent");
 
+//MongoDB info
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
-
 const { MONGO_URI } = process.env;
 const options = {
   useNewUrlParser: true,
@@ -104,11 +104,6 @@ const getFeed = async (req, res) => {
       })
       .slice(0, 3);
 
-    //WORK ON LOGIC
-    // const randomNum = await Math.floor(Math.random() * filterFeed.length);
-
-    // const randomPicks = await filterFeed.slice(randomNum, randomNum + 3);
-
     filterFeed
       ? res
           .status(200)
@@ -139,6 +134,7 @@ const getRecent = async (req, res) => {
   }
 };
 
+//Find random picks from other users
 const getPopularPicks = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   await client.connect();
@@ -192,6 +188,7 @@ const getPopularPicks = async (req, res) => {
   }
 };
 
+//Get recommended book/movie/album based on algorithm
 const getRecommended = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   await client.connect();
@@ -272,6 +269,7 @@ const getRecommended = async (req, res) => {
   }
 };
 
+//Edit user profile if logged in
 const editProfile = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
@@ -303,6 +301,7 @@ const editProfile = async (req, res) => {
   }
 };
 
+//Add like depeneding on media picked and pick ID
 const addLike = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 
@@ -373,6 +372,7 @@ const addLike = async (req, res) => {
   }
 };
 
+//Add comment based on media picked and pick ID
 const addComment = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
 

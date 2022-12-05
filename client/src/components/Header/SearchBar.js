@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineSearch, AiOutlineClose } from "react-icons/ai";
-import MediaPicker from "../Picks/MediaPicker";
+import MediaSelection from "../Picks/MediaSelection";
 
 //--------------------------//
 //---Search Bar Component---//
@@ -10,9 +10,9 @@ import MediaPicker from "../Picks/MediaPicker";
 const SearchBar = () => {
   const [searchvalue, setSearchValue] = useState("");
   const navigate = useNavigate();
-  const [mediaPicked, setMediaPicked] = useState("album");
 
-  //MAKE BETTER LOGIC FOR THIS
+  //States and functions to set which media user is searching and icon display
+  const [mediaPicked, setMediaPicked] = useState("album");
   const [albumsclicked, setAlbumsclicked] = useState(1);
   const [moviesclicked, setMoviesclicked] = useState(0);
   const [booksclicked, setBooksclicked] = useState(0);
@@ -41,6 +41,7 @@ const SearchBar = () => {
     setBooksclicked(0);
   };
 
+  //State and handler to toggle search bar visibility
   const [togglesearch, settogglesearch] = useState(0);
 
   const toggleVisibility = () => {
@@ -69,7 +70,7 @@ const SearchBar = () => {
             }}
             autoFocus={togglesearch === 1 ? true : false}
           />{" "}
-          <MediaPicker
+          <MediaSelection
             albumsclicked={albumsclicked}
             chooseAlbums={chooseAlbums}
             moviesclicked={moviesclicked}

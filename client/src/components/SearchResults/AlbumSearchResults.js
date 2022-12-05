@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AlbumIcon from "../Album/AlbumIcon";
 
-//------------------------------//
-//---Search Results Component---//
-//------------------------------//
+//------------------------------------//
+//---Album Search Results Component---//
+//------------------------------------//
 const AlbumSearchResults = () => {
   const [items, setItems] = useState([]);
   const { searchValue } = useParams();

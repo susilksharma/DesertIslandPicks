@@ -45,6 +45,8 @@ const Header = ({ themeToggler }) => {
         Profile
       </PageLink>
       <PageLink to={"/explore"}>Explore</PageLink>
+
+      {/*Check conditions for rendering Login/Logout button */}
       {error && <p>Authentication Error</p>}
       {!error && isLoading && <p>Loading..</p>}
       {!error && !isLoading && (

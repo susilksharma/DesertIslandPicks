@@ -13,6 +13,7 @@ const Explore = () => {
   const [popularPicks, setPopularPicks] = useState([]);
   const [recommended, setRecommended] = useState(null);
 
+  //Fetch info for Popular With Friends & Recommended and set in state
   useEffect(() => {
     fetch(`picks-popular/${currentUser.userId}`)
       .then((res) => res.json())

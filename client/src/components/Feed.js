@@ -3,6 +3,9 @@ import { useState, useEffect, useContext } from "react";
 import SmallPicks from "./Picks/SmallPicks";
 import { UserContext } from "./UserContext";
 
+//--------------------//
+//---Feed Component---//
+//--------------------//
 const Feed = () => {
   const { currentUser } = useContext(UserContext);
   const [userPicks, setUserPicks] = useState([]);
@@ -11,7 +14,6 @@ const Feed = () => {
     fetch(`/feed/${currentUser.userId}`)
       .then((response) => response.json())
       .then((data) => {
-        // console.log("feed:", data);
         setUserPicks(data.data);
       });
   }, []);

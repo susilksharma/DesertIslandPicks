@@ -4,6 +4,9 @@ import CommentPopUp from "./CommentPopUp";
 import PickStream from "./PickStream";
 import { AiFillDelete } from "react-icons/ai";
 
+//----------------------------//
+//---Picks Review Component---//
+//----------------------------//
 const Review = ({ pick, currentUser, mediaPicked, removePick }) => {
   return (
     <ReviewDiv>
