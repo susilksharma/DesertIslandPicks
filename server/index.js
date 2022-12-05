@@ -45,6 +45,8 @@ const {
   getRecommended,
   editProfile,
   addLike,
+  addComment,
+  getRecent,
 } = require("./handlers/UserHandlers");
 
 express()
@@ -82,11 +84,13 @@ express()
   //User
   .get("/profile/:userId", getProfile)
   .get("/feed/:userId", getFeed)
+  .get("/recent", getRecent)
   .get("/picks-popular/:userId", getPopularPicks)
   .get("/recommended/:userId", getRecommended)
   .post("/add-user", addUser)
   .patch("/profile-edit", editProfile)
   .patch("/add-like", addLike)
+  .patch("/add-comment", addComment)
 
   .listen(port, () => {
     console.log(`Listening on port ${port}`);

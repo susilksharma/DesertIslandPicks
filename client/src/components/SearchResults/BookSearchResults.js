@@ -24,15 +24,15 @@ const BookSearchResults = () => {
 
   console.log("books: ", books);
   return (
-    books && (
-      <main>
+    <main>
+      {books && (
         <ResultsDiv>
           {books.map((book) => {
             return <BookIcon key={book.id} book={book} />;
           })}
         </ResultsDiv>
-      </main>
-    )
+      )}
+    </main>
   );
 };
 

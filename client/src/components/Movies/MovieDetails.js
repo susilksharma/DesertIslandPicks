@@ -71,8 +71,8 @@ const MovieDetails = () => {
         <MovieDiv>
           <ImgDiv onClick={addMovie} isAuthenticated={isAuthenticated}>
             <img
-              alt={`${movieInfo.details?.title} cover`}
-              src={`https://image.tmdb.org/t/p/original/${movieInfo.details?.poster_path}`}
+              alt={`${movieInfo?.details?.title} cover`}
+              src={`https://image.tmdb.org/t/p/original/${movieInfo?.details?.poster_path}`}
             />
             <div>
               {isAuthenticated ? (
@@ -83,18 +83,18 @@ const MovieDetails = () => {
             </div>
           </ImgDiv>
           <InfoDiv>
-            <h2>{movieInfo.details?.title}</h2>
+            <h2>{movieInfo?.details?.title}</h2>
             <h3>
               Directed by{" "}
               <GenreLink
-                to={`/search-movie-director/${movieInfo?.director[0].id}`}
+                to={`/search-movie-director/${movieInfo?.director?.[0].id}`}
               >
-                {movieInfo?.director[0].name},{" "}
+                {movieInfo?.director?.[0].name},{" "}
               </GenreLink>
-              {movieInfo.details?.release_date.slice(0, 4)}
+              {movieInfo?.details?.release_date.slice(0, 4)}
             </h3>
             <h3>
-              {movieInfo.details?.genres.map((genre) => {
+              {movieInfo?.details?.genres.map((genre) => {
                 return (
                   <span key={genre?.id}>
                     <GenreLink to={`/search-movie-genre/${genre?.id}`}>
@@ -104,19 +104,19 @@ const MovieDetails = () => {
                   </span>
                 );
               })}
-              <span>{movieInfo.details?.runtime} min</span>
+              <span>{movieInfo?.details?.runtime} min</span>
             </h3>
             <div>
               <h3>Starring: </h3>
-              {movieInfo.cast?.map((cast, i) => {
+              {movieInfo?.cast?.map((cast, i) => {
                 return <p key={i}>{cast}</p>;
               })}
             </div>
-            <Description>{movieInfo.details?.overview}</Description>
+            <Description>{movieInfo?.details?.overview}</Description>
             <div>
               <h3>Streaming Options:</h3>
               <a
-                href={movieInfo.streamingLink.link}
+                href={movieInfo?.streamingLink?.link}
                 target="_blank"
                 rel="noreferrer"
               >

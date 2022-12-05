@@ -11,19 +11,16 @@ const AlbumSearchResults = () => {
   const [items, setItems] = useState([]);
   const { searchValue } = useParams();
 
-  // const token = process.env.TOKEN;
-
-  //  ----------BACKEND FETCH----------
+  //Fetch search results from backend and set in state
   useEffect(() => {
     fetch(`/search-album/${searchValue}`)
       .then((response) => response.json())
       .then((data) => {
         setItems(data.data.results);
       })
-      .catch((err) => console.log("Error: ", err));
+      .catch((err) => console.error("Error: ", err));
   }, []);
 
-  //   console.log("items: ", items);
   return (
     <main>
       {items.length === 0 ? (
@@ -33,9 +30,7 @@ const AlbumSearchResults = () => {
       ) : (
         <ResultsDiv>
           {items.map((item) => {
-            //MOVE TO BACK END
-            if (item.thumb && item.catno && item.master_id)
-              return <AlbumIcon key={item.id} album={item} />;
+            return <AlbumIcon key={item.id} album={item} />;
           })}
         </ResultsDiv>
       )}

@@ -119,6 +119,26 @@ const getFeed = async (req, res) => {
   }
 };
 
+//Get recent activity
+const getRecent = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  try {
+    const db = client.db("dipDb");
+    const activity = await db.collection("recentActivity").find().toArray();
+
+    filterFeed
+      ? res
+          .status(200)
+          .json({ status: 200, data: activity, message: "User activity!" })
+      : res.status(400).json({ status: 400, message: error });
+  } catch (error) {
+    res.status(500).json({ status: 500, message: error });
+  }
+};
+
 const getPopularPicks = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   await client.connect();
@@ -342,12 +362,76 @@ const addLike = async (req, res) => {
   }
 };
 
+const addComment = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+
+  await client.connect();
+
+  const commentInfo = req.body;
+  try {
+    const db = client.db("dipDb");
+
+    const userInfo = await db.collection("users").findOne({
+      userId: commentInfo.userId,
+    });
+
+    if (commentInfo.mediaPicked === "album") {
+      const commentAdd = await db.collection("users").findOneAndUpdate(
+        {
+          userId: commentInfo.userId,
+          "albumPicks.pickId": commentInfo.pickId,
+        },
+        {
+          $set: {
+            "albumPicks.$.comment": `"${commentInfo.comment}" - ${commentInfo.currentUser}`,
+          },
+        }
+      );
+    } else if (commentInfo.mediaPicked === "movie") {
+      const commentAdd = await db.collection("users").findOneAndUpdate(
+        {
+          userId: commentInfo.userId,
+          "moviePicks.pickId": commentInfo.pickId,
+        },
+        {
+          $set: {
+            "moviePicks.$.comment": `"${commentInfo.comment}" - ${commentInfo.currentUser}`,
+          },
+        }
+      );
+    } else {
+      const commentAdd = await db.collection("users").findOneAndUpdate(
+        {
+          userId: commentInfo.userId,
+          "bookPicks.pickId": commentInfo.pickId,
+        },
+        {
+          $set: {
+            "bookPicks.$.comment": `"${commentInfo.comment}" - ${commentInfo.currentUser}`,
+          },
+        }
+      );
+    }
+    userInfo
+      ? res.status(200).json({
+          status: 200,
+          data: userInfo,
+          message: "Comment Aded!",
+        })
+      : res.status(400).json({ status: 400, message: "Please try again" });
+  } catch (error) {
+    res.status(500).json({ status: 500, message: error });
+  }
+};
+
 module.exports = {
   addUser,
   getProfile,
   getFeed,
+  getRecent,
   getPopularPicks,
   getRecommended,
   editProfile,
   addLike,
+  addComment,
 };

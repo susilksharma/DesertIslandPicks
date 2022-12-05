@@ -25,7 +25,9 @@ const BookDetails = () => {
         setBook(data.data.items[0]);
       })
       //WHAT TO DO WITH ERROR
-      .catch((err) => navigate("/error"));
+      .catch((err) => {
+        console.error("Error, ", err);
+      });
   }, []);
 
   const addBook = () => {
@@ -72,8 +74,8 @@ const BookDetails = () => {
         <BookDiv>
           <ImgDiv onClick={addBook} isAuthenticated={isAuthenticated}>
             <img
-              alt={`${book.volumeInfo?.title} cover`}
-              src={book.volumeInfo?.imageLinks?.thumbnail}
+              alt={`${book?.volumeInfo?.title} cover`}
+              src={book?.volumeInfo?.imageLinks?.thumbnail}
             />
             <div>
               {isAuthenticated ? (
@@ -84,30 +86,32 @@ const BookDetails = () => {
             </div>
           </ImgDiv>
           <InfoDiv>
-            {book.volumeInfo?.authors ? (
+            {book?.volumeInfo?.authors ? (
               <h2>
                 <ArtistLink
-                  to={`/search-book/${book.volumeInfo?.authors?.[0]}`}
+                  to={`/search-book/${book?.volumeInfo?.authors?.[0]}`}
                 >
-                  {book.volumeInfo?.authors?.[0]}
+                  {book?.volumeInfo?.authors?.[0]}
                 </ArtistLink>{" "}
-                - {book.volumeInfo?.title}
+                - {book?.volumeInfo?.title}
               </h2>
             ) : (
-              <h2>{book.volumeInfo?.title}</h2>
+              <h2>{book?.volumeInfo?.title}</h2>
             )}
             <h3>
               <span>
-                {book.volumeInfo?.categories?.[0]}/{book.volumeInfo?.publisher}
-                {book.volumeInfo?.pageCount} pages
+                {book?.volumeInfo?.categories?.[0]}/{book.volumeInfo?.publisher}
               </span>
-              {", "}
-              {book.volumeInfo?.publishedDate.slice(0, 4)}
             </h3>
-            <Description>{book.volumeInfo?.description}</Description>
+            <h3>
+              {book?.volumeInfo?.pageCount} pages
+              {", "}
+              {book?.volumeInfo?.publishedDate.slice(0, 4)}
+            </h3>
+            <Description>{book?.volumeInfo?.description}</Description>
             <div>
               <h3>Google Books:</h3>
-              <a href={book.volumeInfo?.infoLink}>
+              <a href={book?.volumeInfo?.infoLink}>
                 <AiFillGoogleCircle size={30} />
               </a>
             </div>

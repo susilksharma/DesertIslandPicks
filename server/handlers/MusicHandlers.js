@@ -25,6 +25,11 @@ const searchAlbum = async (req, res) => {
   try {
     //Look through all master recordings that contain search parameters
     const response = await db.search(searchValue, { type: "master" });
+
+    //Filter out results without images, catalogue numbers, or Ids
+    const filteredResponse = response.results.filter((result) => {
+      return result.thumb && result.catno && result.master_id;
+    });
     response
       ? res.status(200).json({
           status: 200,
@@ -115,6 +120,17 @@ const addAlbum = async (req, res) => {
       await db
         .collection("allAlbumPicks")
         .insertOne({ ...albumInfo, type: "album" });
+
+      //Add to Recent Activity
+      await db
+        .collection("recentActivity")
+        .insertOne({
+          activity: "picked",
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          pickId: album.id,
+          title: `the album ${album.title}`,
+        });
 
       res
         .status(200)

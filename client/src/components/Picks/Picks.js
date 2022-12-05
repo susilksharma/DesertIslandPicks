@@ -4,7 +4,7 @@ import PickDetail from "./PickDetail";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import MediaPicker from "./MediaPicker";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 // Import Swiper React components, modules and styles
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -24,14 +24,14 @@ const Picks = () => {
   const [albumsclicked, setAlbumsclicked] = useState(1);
   const [moviesclicked, setMoviesclicked] = useState(0);
   const [booksclicked, setBooksclicked] = useState(0);
-
+  console.log(picks);
   useEffect(() => {
     fetch(`/picks/${mediaPicked}/${userId}`)
       .then((response) => response.json())
       .then((data) => {
         setPicks(data.data);
       });
-  }, [mediaPicked]);
+  }, [mediaPicked, userId]);
 
   const chooseBooks = (e) => {
     e.preventDefault();
@@ -91,7 +91,12 @@ const Picks = () => {
       ) : (
         <>
           {userId !== currentUser.userId && (
-            <Title>{picks[0].userName}'s Picks</Title>
+            <Title>
+              <ProfileLink to={`/profile/${picks[0].userId}`}>
+                {picks[0].userName}
+              </ProfileLink>
+              's Picks
+            </Title>
           )}
           <Swiper
             navigation={true}
@@ -133,6 +138,16 @@ const LoadingDiv = styled.div`
   margin-top: 50px;
   display: flex;
   justify-content: center;
+`;
+
+const ProfileLink = styled(Link)`
+  text-decoration: underline;
+  color: var(--dark-grey);
+  text-decoration-thickness: 0.5px;
+
+  :hover {
+    text-decoration-thickness: 2px;
+  }
 `;
 
 const Title = styled.h2`

@@ -14,11 +14,11 @@ import MovieSearchDirectorResults from "./SearchResults/MovieSearchDirectorResul
 import AlbumDetails from "./Album/AlbumDetails";
 import BookDetails from "./Book/BookDetails";
 import MovieDetails from "./Movies/MovieDetails";
-import About from "./About";
+import About from "./About/About";
 import { useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./Theme";
-import AboutLink from "./AboutLink";
+import AboutLink from "./About/AboutLink";
 
 //-------------------//
 //---App Component---//

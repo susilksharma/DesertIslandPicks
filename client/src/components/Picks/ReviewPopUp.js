@@ -39,7 +39,7 @@ const ReviewPopUp = ({ pick, mediaPicked }) => {
       })
       .catch((error) => {
         // navigate("/error");
-        window.alert("Sorry, please ty again.", error);
+        console.error("Error,", error);
       });
   };
 

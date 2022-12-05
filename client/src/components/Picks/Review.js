@@ -1,35 +1,13 @@
 import styled from "styled-components";
 import ReviewPopUp from "./ReviewPopUp";
+import CommentPopUp from "./CommentPopUp";
 import PickStream from "./PickStream";
-import { AiFillDelete, AiFillHeart } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
 
 const Review = ({ pick, currentUser, mediaPicked, removePick }) => {
-  const likePick = () => {
-    fetch(`/add-like`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        userId: pick.userId,
-        userName: pick.userName,
-        pickId: pick.pickId,
-        mediaPicked: mediaPicked,
-      }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        window.alert(data.message);
-        window.location.reload();
-      })
-      .catch((error) => {
-        window.alert("Sorry, please try again.", error);
-      });
-  };
-
   return (
     <ReviewDiv>
+      {/*Header conditionally changes if you are viewing your own Picks. */}
       {pick.userId === currentUser.userId ? (
         <>
           <h3>Your Review</h3>
@@ -38,6 +16,8 @@ const Review = ({ pick, currentUser, mediaPicked, removePick }) => {
       ) : (
         <h3>{pick.userName}'s Review</h3>
       )}
+
+      {/*Conditional render based on if there is a review logged. */}
       {pick?.review === "" ? (
         <div>
           No review logged.{" "}
@@ -48,6 +28,8 @@ const Review = ({ pick, currentUser, mediaPicked, removePick }) => {
           {pick?.review} <ReviewPopUp pick={pick} mediaPicked={mediaPicked} />
         </div>
       )}
+
+      {/*If it's your Picks, you can delete. Otherwise you can Like and/or Comment. */}
       {pick.userId === currentUser.userId ? (
         <>
           <h3>Remove Pick:</h3>
@@ -56,18 +38,12 @@ const Review = ({ pick, currentUser, mediaPicked, removePick }) => {
         </>
       ) : (
         <>
-          <AiFillHeart
-            size={30}
-            style={{
-              color: pick.isLiked ? "#ec7274" : "#464646",
-              cursor: "pointer",
-            }}
-            onClick={likePick}
-          />
-          <div>
-            comment text input that patches comment to pick in database (also
-            how heart will work)
-          </div>
+          <h3>Comment/Like:</h3>
+          <Line />
+          <CommentDiv>
+            {pick?.comment}
+            <CommentPopUp pick={pick} mediaPicked={mediaPicked} />
+          </CommentDiv>
         </>
       )}
       <PickStream mediaPicked={mediaPicked} pick={pick} />
@@ -98,6 +74,13 @@ const ReviewDiv = styled.div`
       transition: all 0.4 ease-in-out;
     }
   }
+`;
+
+const CommentDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 `;
 
 const DeleteIcon = styled(AiFillDelete)`

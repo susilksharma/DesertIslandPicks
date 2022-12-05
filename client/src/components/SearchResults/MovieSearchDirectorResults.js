@@ -25,15 +25,15 @@ const MovieSearchDirectorResults = () => {
 
   console.log("items: ", items);
   return (
-    items && (
-      <main>
+    <main>
+      {items && (
         <ResultsDiv>
           {items.map((item) => {
             return <MovieIcon key={item.backdrop_path} movie={item} />;
           })}
         </ResultsDiv>
-      </main>
-    )
+      )}
+    </main>
   );
 };
 

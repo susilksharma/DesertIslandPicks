@@ -3,6 +3,8 @@ import SmallPicks from "../Picks/SmallPicks";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import EditProfile from "./EditProfile";
+import { UserContext } from "../UserContext";
+import { useContext } from "react";
 
 //-----------------------//
 //---Profile Component---//
@@ -10,13 +12,19 @@ import EditProfile from "./EditProfile";
 const Profile = () => {
   const userId = useParams();
   const [userInfo, setUserInfo] = useState(null);
+  const [recent, setRecent] = useState(null);
+  const { currentUser } = useContext(UserContext);
 
-  //LOGIC TO GET SPECIFIC USER PICKS NEEDS TO CHANGE
   useEffect(() => {
     fetch(`/profile/${userId.userId}`)
       .then((response) => response.json())
       .then((data) => {
         setUserInfo(data.data);
+      });
+    fetch(`/recent`)
+      .then((response) => response.json())
+      .then((data) => {
+        setRecent(data.data);
       });
   }, []);
   console.log(userInfo);
@@ -36,7 +44,9 @@ const Profile = () => {
                 <h1>
                   {userInfo.given_name} {userInfo.family_name}
                 </h1>
-                <EditProfile userInfo={userInfo} />
+                {userId.userId === currentUser.userId && (
+                  <EditProfile userInfo={userInfo} />
+                )}
               </div>
             </UserDiv>
             <div>
@@ -68,6 +78,14 @@ const Profile = () => {
               </section>
             </div>
             <div>Recent Activity</div>
+            {recent &&
+              recent.map((activity) => {
+                return (
+                  <div>
+                    {recent.userName} {recent.activity}{" "}
+                  </div>
+                );
+              })}
           </PicksDiv>
         </>
       )}
@@ -130,7 +148,8 @@ const LoadingDiv = styled.div`
 
 const ProfileImg = styled.img`
   border-radius: 50%;
-  height: 120px;
+  height: 150px;
+  width: 150px;
 `;
 
 const PicksDiv = styled.div`
