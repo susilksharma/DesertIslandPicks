@@ -8,7 +8,6 @@ const {
   searchAlbum,
   getAlbumDetails,
   addAlbum,
-  getSpotify,
   getAlbumPicks,
   addAlbumReview,
   deleteAlbum,
@@ -61,7 +60,6 @@ express()
   .patch("/album-review", addAlbumReview)
   .patch("/delete-album", deleteAlbum)
   .get("/picks/album/:userId", getAlbumPicks)
-  .get("/spotify/:searchValue", getSpotify)
 
   //Movie
   .get("/search-movie/:searchValue", searchMovies)

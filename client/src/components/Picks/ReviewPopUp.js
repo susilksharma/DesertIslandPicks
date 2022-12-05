@@ -13,7 +13,6 @@ import { MdEdit } from "react-icons/md";
 const ReviewPopUp = ({ pick, mediaPicked }) => {
   const [newReview, setNewReview] = useState("");
   const { currentUser } = useContext(UserContext);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setNewReview(e.target.value);
@@ -27,6 +26,8 @@ const ReviewPopUp = ({ pick, mediaPicked }) => {
         pickId: pickId,
         review: newReview,
         userId: currentUser.userId,
+        userName: pick.userName,
+        title: pick.title,
       }),
       headers: {
         Accept: "application/json",
@@ -38,7 +39,6 @@ const ReviewPopUp = ({ pick, mediaPicked }) => {
         window.alert(data.message);
       })
       .catch((error) => {
-        // navigate("/error");
         console.error("Error,", error);
       });
   };

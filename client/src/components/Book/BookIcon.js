@@ -29,7 +29,7 @@ const BookDiv = styled(Link)`
   flex-direction: column;
   align-items: center;
   width: 200px;
-  /* background-color: #818fb5; */
+  background-color: #c1cce3;
   border-radius: 10px;
   padding: 20px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;

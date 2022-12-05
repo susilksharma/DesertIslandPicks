@@ -103,12 +103,25 @@ const addBook = async (req, res) => {
           },
         }
       );
-      await db
+      const addBook = await db
         .collection("allBookPicks")
         .insertOne({ ...bookInfo, type: "book" });
-      res
-        .status(200)
-        .json({ status: 200, data: userInfo, message: "Book added!" });
+
+      //Add to Recent Activity
+      await db.collection("recentActivity").insertOne({
+        activity: "picked",
+        userId: bookInfo.userId,
+        userName: bookInfo.userName,
+        pickId: bookInfo.pickId,
+        title: `the album ${bookInfo.title}`,
+        time: Date.now(),
+      });
+
+      addBook
+        ? res
+            .status(200)
+            .json({ status: 200, data: userInfo, message: "Book added!" })
+        : res.status(400).json({ status: 400, message: "Error adding book!" });
     }
   } catch (err) {
     res.status(500).json({ status: 500, message: err });
@@ -147,16 +160,28 @@ const addBookReview = async (req, res) => {
   try {
     const db = client.db("dipDb");
 
-    await db
+    const writeReview = await db
       .collection("users")
       .findOneAndUpdate(
         { userId: reviewInfo.userId, "bookPicks.pickId": reviewInfo.pickId },
         { $set: { "bookPicks.$.review": reviewInfo.review } }
       );
 
-    return res
-      .status(200)
-      .json({ status: 200, data: reviewInfo, message: "Review Updated!" });
+    //Add to Recent Activity
+    await db.collection("recentActivity").insertOne({
+      activity: "reviewed",
+      userId: reviewInfo.userId,
+      userName: reviewInfo.userName,
+      pickId: reviewInfo.pickId,
+      title: `the album ${reviewInfo.title}`,
+      time: Date.now(),
+    });
+
+    writeReview
+      ? res
+          .status(200)
+          .json({ status: 200, data: reviewInfo, message: "Review Updated!!" })
+      : res.status(400).json({ status: 400, message: "Please try again" });
   } catch (error) {
     return res.status(500).json({ status: 500, message: error });
   }

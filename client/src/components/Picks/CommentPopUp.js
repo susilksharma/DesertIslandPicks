@@ -11,6 +11,7 @@ import { BiCommentDetail } from "react-icons/bi";
 const CommentPopUp = ({ pick, mediaPicked }) => {
   const [comment, setComment] = useState("");
   const { currentUser } = useContext(UserContext);
+  console.log(pick);
 
   const likePick = () => {
     fetch(`/add-like`, {
@@ -20,6 +21,7 @@ const CommentPopUp = ({ pick, mediaPicked }) => {
         userName: pick.userName,
         pickId: pick.pickId,
         mediaPicked: mediaPicked,
+        title: pick.title,
       }),
       headers: {
         Accept: "application/json",
@@ -50,6 +52,8 @@ const CommentPopUp = ({ pick, mediaPicked }) => {
         comment: comment,
         userId: pick.userId,
         currentUser: currentUser.name,
+        title: pick.title,
+        userName: pick.userName,
       }),
       headers: {
         Accept: "application/json",

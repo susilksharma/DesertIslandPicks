@@ -58,7 +58,7 @@ const IconDiv = styled(Link)`
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  background-color: #94d1d9;
+  background-color: #c1cce3;
   border-radius: 10px;
   color: var(--dark-grey);
   padding: 20px;

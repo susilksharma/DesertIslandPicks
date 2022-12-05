@@ -12,9 +12,6 @@ const options = {
 const Discogs = require("disconnect").Client;
 const { TOKEN } = process.env;
 
-//Spotify Info
-const { SPOTIFY_TOKEN, REFRESH_TOKEN } = process.env;
-
 //Search Discogs API for album based on search parameters
 const searchAlbum = async (req, res) => {
   const searchValue = req.params.searchValue;
@@ -122,19 +119,18 @@ const addAlbum = async (req, res) => {
         .insertOne({ ...albumInfo, type: "album" });
 
       //Add to Recent Activity
-      await db
-        .collection("recentActivity")
-        .insertOne({
-          activity: "picked",
-          userId: currentUser.userId,
-          userName: currentUser.name,
-          pickId: album.id,
-          title: `the album ${album.title}`,
-        });
+      await db.collection("recentActivity").insertOne({
+        activity: "picked",
+        userId: albumInfo.userId,
+        userName: albumInfo.userName,
+        pickId: albumInfo.pickId,
+        title: `the album ${albumInfo.title}`,
+        time: Date.now(),
+      });
 
       res
         .status(200)
-        .json({ status: 200, data: userInfo, message: "Album added!" });
+        .json({ status: 200, data: albumInfo, message: "Album added!" });
     }
   } catch (err) {
     res.status(500).json({ status: 500, message: err });
@@ -163,29 +159,6 @@ const getAlbumPicks = async (req, res) => {
   }
 };
 
-const getSpotify = async (req, res) => {
-  const albumInfo = req.params.searchValue.replace(/ /g, "%20");
-
-  try {
-    const results = await request.get(
-      `https://api.spotify.com/v1/search?q=${albumInfo}&type=album`
-    );
-    results
-      ? res.status(200).json({
-          status: 200,
-          data: results,
-          message: "Success!",
-        })
-      : res.status(400).json({
-          status: 400,
-          data: albumInfo,
-          message: "Error",
-        });
-  } catch (err) {
-    return res.status(500).json({ status: 500, message: err });
-  }
-};
-
 //Add/edit review for pick
 const addAlbumReview = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
@@ -202,6 +175,17 @@ const addAlbumReview = async (req, res) => {
         { userId: reviewInfo.userId, "albumPicks.pickId": reviewInfo.pickId },
         { $set: { "albumPicks.$.review": reviewInfo.review } }
       );
+
+    //Add to Recent Activity
+    await db.collection("recentActivity").insertOne({
+      activity: "reviewed",
+      userId: reviewInfo.userId,
+      userName: reviewInfo.userName,
+      pickId: reviewInfo.pickId,
+      title: `the album ${reviewInfo.title}`,
+      time: Date.now(),
+    });
+
     writeReview
       ? res
           .status(200)
@@ -248,7 +232,6 @@ const deleteAlbum = async (req, res) => {
 module.exports = {
   getAlbumDetails,
   searchAlbum,
-  getSpotify,
   getAlbumPicks,
   addAlbum,
   addAlbumReview,

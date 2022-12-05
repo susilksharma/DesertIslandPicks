@@ -7,7 +7,7 @@ import { AiOutlineEye } from "react-icons/ai";
 //-----------------------------//
 const MovieIcon = ({ movie }) => {
   return (
-    <BookDiv to={`/movie/${movie.id}`}>
+    <MovieDiv to={`/movie/${movie.id}`}>
       <ImgDiv>
         <img
           src={`https://image.tmdb.org/t/p/original/${movie?.poster_path}`}
@@ -20,16 +20,16 @@ const MovieIcon = ({ movie }) => {
         </div>
       </ImgDiv>
       <h3>{movie?.title}</h3>
-    </BookDiv>
+    </MovieDiv>
   );
 };
 
-const BookDiv = styled(Link)`
+const MovieDiv = styled(Link)`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 200px;
-  /* background-color: #818fb5; */
+  background-color: #c1cce3;
   border-radius: 10px;
   padding: 20px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
@@ -46,6 +46,7 @@ const ImgDiv = styled.div`
   position: relative;
 
   img {
+    height: 220px;
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   }
@@ -56,7 +57,7 @@ const ImgDiv = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100%;
+    height: 220px;
     width: 100%;
     transition: 0.5s ease;
     background-color: #464646;

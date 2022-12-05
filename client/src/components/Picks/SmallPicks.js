@@ -128,7 +128,7 @@ const StyledSwiperSlide = styled(SwiperSlide)`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  background-color: #94d1d9;
+  background-color: #c1cce3;
   border-radius: 10px;
   color: var(--dark-grey);
   overflow: hidden;

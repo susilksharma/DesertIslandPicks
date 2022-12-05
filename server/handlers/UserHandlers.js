@@ -129,7 +129,7 @@ const getRecent = async (req, res) => {
     const db = client.db("dipDb");
     const activity = await db.collection("recentActivity").find().toArray();
 
-    filterFeed
+    activity
       ? res
           .status(200)
           .json({ status: 200, data: activity, message: "User activity!" })
@@ -350,6 +350,17 @@ const addLike = async (req, res) => {
           { $set: { "bookPicks.$.isLiked": !isLikedValue } }
         );
     }
+
+    //Add to Recent Activity
+    await db.collection("recentActivity").insertOne({
+      activity: "liked",
+      userId: pickInfo.userId,
+      userName: pickInfo.userName,
+      pickId: pickInfo.pickId,
+      title: `${pickInfo.userName}'s pick, ${pickInfo.title}`,
+      time: Date.now(),
+    });
+
     userInfo
       ? res.status(200).json({
           status: 200,
@@ -412,6 +423,16 @@ const addComment = async (req, res) => {
         }
       );
     }
+
+    //Add to Recent Activity
+    await db.collection("recentActivity").insertOne({
+      activity: "commented on",
+      userId: pickInfo.userId,
+      userName: pickInfo.userName,
+      pickId: pickInfo.pickId,
+      title: `${pickInfo.userName}'s pick, ${pickInfo.title}`,
+      time: Date.now(),
+    });
     userInfo
       ? res.status(200).json({
           status: 200,

@@ -164,7 +164,7 @@ const StyledSwiperSlide = styled(SwiperSlide)`
   height: fit-content;
   min-height: 530px;
   padding-bottom: 20px;
-  background-color: #b6c0d6;
+  background-color: #c1cce3;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   color: var(--dark-grey);

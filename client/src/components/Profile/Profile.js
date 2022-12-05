@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import SmallPicks from "../Picks/SmallPicks";
 import { useEffect, useState } from "react";
@@ -5,6 +6,7 @@ import { useParams, Link } from "react-router-dom";
 import EditProfile from "./EditProfile";
 import { UserContext } from "../UserContext";
 import { useContext } from "react";
+import moment from "moment";
 
 //-----------------------//
 //---Profile Component---//
@@ -27,7 +29,6 @@ const Profile = () => {
         setRecent(data.data);
       });
   }, []);
-  console.log(userInfo);
 
   return (
     <main>
@@ -77,21 +78,42 @@ const Profile = () => {
                 <SmallPicks user={userInfo} />
               </section>
             </div>
-            <div>Recent Activity</div>
-            {recent &&
-              recent.map((activity) => {
-                return (
+            <ActivityDiv>
+              {recent && userId.userId === currentUser.userId && (
+                <>
+                  <h3>Recent Activity</h3>
                   <div>
-                    {recent.userName} {recent.activity}{" "}
+                    {recent
+                      .map((activity) => {
+                        return (
+                          <div key={activity.time}>
+                            You {activity.activity} {activity.title}
+                            {", "}
+                            <span>{moment(activity.time).fromNow()}</span>
+                          </div>
+                        );
+                      })
+                      .slice(0, 10)}
                   </div>
-                );
-              })}
+                </>
+              )}
+            </ActivityDiv>
           </PicksDiv>
         </>
       )}
     </main>
   );
 };
+
+const ActivityDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  span {
+    font-style: italic;
+  }
+`;
 
 const HeaderDiv = styled.div`
   margin: 20px;
