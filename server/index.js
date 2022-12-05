@@ -20,7 +20,6 @@ const {
   getMovieDetails,
   addMovie,
   getMoviePicks,
-  getCrew,
   addMovieReview,
   searchMoviesByGenre,
   searchMoviesByDirector,
@@ -43,6 +42,9 @@ const {
   getProfile,
   getFeed,
   getPopularPicks,
+  getRecommended,
+  editProfile,
+  addLike,
 } = require("./handlers/UserHandlers");
 
 express()
@@ -64,10 +66,8 @@ express()
   .get("/search-movie-genre/:genreId", searchMoviesByGenre)
   .get("/search-movie-director/:directorId", searchMoviesByDirector)
   .get("/movie/:movieId", getMovieDetails)
-  .get("/movie-crew/:movieId", getCrew)
   .patch("/add-movie", addMovie)
   .patch("/delete-movie", deleteMovie)
-
   .patch("/movie-review", addMovieReview)
   .get("/picks/movie/:userId", getMoviePicks)
 
@@ -83,7 +83,10 @@ express()
   .get("/profile/:userId", getProfile)
   .get("/feed/:userId", getFeed)
   .get("/picks-popular/:userId", getPopularPicks)
+  .get("/recommended/:userId", getRecommended)
   .post("/add-user", addUser)
+  .patch("/profile-edit", editProfile)
+  .patch("/add-like", addLike)
 
   .listen(port, () => {
     console.log(`Listening on port ${port}`);

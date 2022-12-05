@@ -23,31 +23,8 @@ const AlbumDetails = () => {
         console.log(data);
         setAlbum(data.data);
       })
-      //WHAT TO DO WITH ERROR
       .catch((err) => navigate("/error"));
   }, []);
-
-  //   Fetch Spotify info
-  //   useEffect(() => {
-  //     // https://api.spotify.com/v1/search?q=album:nevermind%20artist:nirvana&type=album
-  //     fetch(
-  //       `https://api.spotify.com/v1/search?q=/spotify/${album?.title}%20artist:${album?.artists?.[0]?.name}&type=album`,
-  //       {
-  //         headers: {
-  //           Accept: "application/json",
-  //           "Content-Type": "application/json",
-  //           Authorization:
-  //             "Bearer ",
-  //         },
-  //       }
-  //     )
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         console.log(data);
-  //       })
-  //       //WHAT TO DO WITH ERROR
-  //       .catch((err) => console.log("Error: ", err));
-  //   }, [album]);
 
   const addAlbum = () => {
     isAuthenticated &&
@@ -58,12 +35,12 @@ const AlbumDetails = () => {
           userName: currentUser.name,
           pickId: album.id,
           title: album.title,
-          artist: album.artists?.[0]?.name,
+          artist: album.artists?.[0]?.name.replace(/ *\([^)]*\) */g, ""),
           image: album.images?.[0]?.uri,
           genre: album.genres?.[0],
           style: album.styles?.[0],
           year: album?.year,
-          video: album.videos?.[0]?.uri.replace("watch?v=", "embed/"),
+          link: album.videos?.[0]?.uri.replace("watch?v=", "embed/"),
           main_release: album.main_release,
         }),
         headers: {
@@ -111,8 +88,13 @@ const AlbumDetails = () => {
           )}
           <InfoDiv>
             <h2>
-              <ArtistLink to={`/search-album/${album.artists?.[0]?.name}`}>
-                {album.artists?.[0]?.name}
+              <ArtistLink
+                to={`/search-album/${album.artists?.[0]?.name.replace(
+                  / *\([^)]*\) */g,
+                  ""
+                )}`}
+              >
+                {album.artists?.[0]?.name.replace(/ *\([^)]*\) */g, "")}
               </ArtistLink>{" "}
               - {album.title}
             </h2>

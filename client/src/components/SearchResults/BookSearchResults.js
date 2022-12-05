@@ -17,7 +17,7 @@ const BookSearchResults = () => {
     fetch(`/search-book/${searchValue}`)
       .then((response) => response.json())
       .then((data) => {
-        setBooks(data.data.items);
+        setBooks(data.data);
       })
       .catch((err) => navigate("/error"));
   }, []);

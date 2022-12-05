@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { AiFillDelete, AiFillHeart } from "react-icons/ai";
-import { RiYoutubeFill } from "react-icons/ri";
-import ReviewPopUp from "./ReviewPopUp";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
 import ImageLarge from "./ImageLarge";
+import Review from "./Review";
 
 //----------------------------//
 //---Picks Detail Component---//
@@ -31,7 +29,7 @@ const PickDetail = ({ pick, mediaPicked }) => {
         window.location.reload();
       })
       .catch((error) => {
-        window.alert("Error, please try again.", error);
+        console.error("Error,", error);
       });
   };
   return (
@@ -54,44 +52,12 @@ const PickDetail = ({ pick, mediaPicked }) => {
             <Link to={`/${mediaPicked}/${pick.pickId}`}>
               <ImageLarge pick={pick} />
             </Link>
-            <ReviewDiv>
-              {/*CHANGE FROM INLINE */}
-              {pick.video && (
-                <a
-                  href={pick.video.replace("embed/", "watch?v=")}
-                  style={{ color: "var(--dark-grey)", width: "fit-content" }}
-                >
-                  <RiYoutubeFill size={30} />
-                </a>
-              )}
-              {pick.userId === currentUser.userId ? (
-                <h3>Your Review</h3>
-              ) : (
-                <h3>{pick.userName}'s Review</h3>
-              )}
-              {pick?.review === "" ? (
-                <div>
-                  No review logged.{" "}
-                  <ReviewPopUp pick={pick} mediaPicked={mediaPicked} />
-                </div>
-              ) : (
-                <div>
-                  {pick?.review}{" "}
-                  <ReviewPopUp pick={pick} mediaPicked={mediaPicked} />
-                </div>
-              )}
-              {pick.userId === currentUser.userId ? (
-                <DeleteIcon size={30} onClick={removePick} />
-              ) : (
-                <>
-                  <AiFillHeart size={30} />
-                  <div>
-                    comment text input that patches comment to pick in database
-                    (also how heart will work)
-                  </div>
-                </>
-              )}
-            </ReviewDiv>
+            <Review
+              pick={pick}
+              currentUser={currentUser}
+              mediaPicked={mediaPicked}
+              removePick={removePick}
+            />
           </ContentDiv>
         </>
       )}
@@ -112,24 +78,6 @@ const ContentDiv = styled.div`
     font-weight: bold;
     text-decoration: underline;
     cursor: pointer;
-  }
-`;
-
-const ReviewDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  h3 {
-    text-decoration: underline;
-  }
-`;
-
-const DeleteIcon = styled(AiFillDelete)`
-  cursor: pointer;
-  :hover {
-    opacity: 0.8;
-    transition: all 0.4 ease-in-out;
   }
 `;
 

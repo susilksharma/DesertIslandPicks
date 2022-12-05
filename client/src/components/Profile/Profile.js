@@ -2,15 +2,13 @@ import styled from "styled-components";
 import SmallPicks from "../Picks/SmallPicks";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import EditProfile from "./EditProfile";
 
 //-----------------------//
 //---Profile Component---//
 //-----------------------//
 const Profile = () => {
   const userId = useParams();
-  const [genre, setGenre] = useState("");
-  const [favArtist, setFavArtist] = useState("");
-  const [favAuthor, setFavAuthor] = useState("");
   const [userInfo, setUserInfo] = useState(null);
 
   //LOGIC TO GET SPECIFIC USER PICKS NEEDS TO CHANGE
@@ -21,6 +19,7 @@ const Profile = () => {
         setUserInfo(data.data);
       });
   }, []);
+  console.log(userInfo);
 
   return (
     <main>
@@ -34,27 +33,29 @@ const Profile = () => {
             <UserDiv>
               <ProfileImg src={userInfo?.picture} alt={userInfo.name} />
               <div>
-                <h1>{userInfo.name}</h1>
-                <button>Edit Profile</button>
+                <h1>
+                  {userInfo.given_name} {userInfo.family_name}
+                </h1>
+                <EditProfile userInfo={userInfo} />
               </div>
             </UserDiv>
             <div>
               <h3>
-                Favorite Movie Genre:
-                <FavLink to={"/"}>
-                  <span> Thriller</span>
+                Favorite Movie:
+                <FavLink to={`/search-movie/${userInfo?.favMovie}`}>
+                  <span> {userInfo?.favMovie}</span>
                 </FavLink>
               </h3>
               <h3>
                 Favorite Musical Artist:
-                <FavLink to={"/search-album/the%20velvet%20underground?"}>
-                  <span> The Velvet Underground</span>
+                <FavLink to={`/search-album/${userInfo?.favMusicalArtist}`}>
+                  <span> {userInfo?.favMusicalArtist}</span>
                 </FavLink>{" "}
               </h3>
               <h3>
                 Favorite Author:
-                <FavLink to={"/search-book/Joseph%20Heller"}>
-                  <span> Paul Auster</span>
+                <FavLink to={`/search-book/${userInfo?.favAuthor}`}>
+                  <span> {userInfo?.favAuthor}</span>
                 </FavLink>{" "}
               </h3>
             </div>
@@ -65,11 +66,9 @@ const Profile = () => {
               <section>
                 <SmallPicks user={userInfo} />
               </section>
-              <h2>My Picks</h2>
             </div>
             <div>Recent Activity</div>
           </PicksDiv>
-          <Line />
         </>
       )}
     </main>
@@ -136,10 +135,10 @@ const ProfileImg = styled.img`
 
 const PicksDiv = styled.div`
   color: ${({ theme }) => theme.text};
-
   width: 100%;
   display: flex;
   justify-content: space-around;
+  margin-top: 40px;
 `;
 
 const FavLink = styled(Link)`

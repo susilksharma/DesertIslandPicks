@@ -1,9 +1,11 @@
 import Popup from "reactjs-popup";
 import styled from "styled-components";
-import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
+import { AiFillCloseCircle } from "react-icons/ai";
 import { useState, useContext } from "react";
 import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
+import { FiPlus } from "react-icons/fi";
+import { MdEdit } from "react-icons/md";
 
 //-----------------------------//
 //---Review Pop Up Component---//
@@ -45,7 +47,7 @@ const ReviewPopUp = ({ pick, mediaPicked }) => {
     <Popup
       trigger={
         <AddReviewButton>
-          {pick.review === "" ? "Add a Review" : <AiFillEdit />}
+          {pick.review === "" ? <FiPlus size={20} /> : <MdEdit size={20} />}
         </AddReviewButton>
       }
       modal
@@ -73,55 +75,44 @@ const ReviewPopUp = ({ pick, mediaPicked }) => {
             </label>
             <SaveButton type="submit" value="Save" />
           </ReviewForm>
-          <Actions>
-            {/* <AiFillCloseCircle
-              onClick={() => {
-                close();
-              }}
-            /> */}
-          </Actions>
         </ModalDiv>
       )}
     </Popup>
   );
 };
 
-export default ReviewPopUp;
-
 const AddReviewButton = styled.button`
   background: none;
   border: none;
   text-decoration: underline;
   font-weight: bold;
-  font-family: "Roboto";
   font-size: 16px;
+  color: var(--dark-grey);
+
   cursor: pointer;
+  :hover {
+    opacity: 0.6;
+    transition: all 0.4 ease-in-out;
+  }
 `;
 
 const ModalDiv = styled.div`
-  background: #525252;
+  background: #556678;
   color: var(--white);
   border-radius: 10px;
   width: 50vw;
   font-size: 12px;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 `;
 
 const Header = styled.div`
   width: 100%;
-  border-bottom: 1px solid gray;
   font-size: 18px;
   text-align: center;
   padding: 5px;
 `;
 
-const Actions = styled.div`
-  width: 100%;
-  padding: 10px 5px;
-  margin: auto;
-  text-align: center;
-`;
-
-//RESTYLE THIS
 const StyledButton = styled.div`
   cursor: pointer;
   position: absolute;
@@ -130,9 +121,6 @@ const StyledButton = styled.div`
   line-height: 20px;
   right: -10px;
   top: -10px;
-  /* font-size: 24px;
-  border-radius: 18px;
-  border: 1px solid #cfcece; */
 `;
 
 const ReviewForm = styled.form`
@@ -142,12 +130,25 @@ const ReviewForm = styled.form`
 
 const ReviewInput = styled.input`
   width: 100%;
-  height: 200px;
+  height: 100px;
   margin: 10px;
   border-radius: 5px;
+  padding: 10px;
 `;
 
 const SaveButton = styled.input`
   border: none;
   border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 16px;
+  margin-top: 10px;
+  background-color: #8c8c8c;
+  color: var(--white);
+
+  :hover {
+    background-color: #595959;
+    transition: all 0.4s ease-in-out;
+  }
 `;
+
+export default ReviewPopUp;

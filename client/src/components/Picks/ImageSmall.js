@@ -33,7 +33,7 @@ const ImgDiv = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100%;
+    height: 160px;
     width: 100%;
     transition: 0.5s ease;
     background-color: #464646;

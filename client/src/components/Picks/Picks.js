@@ -7,7 +7,6 @@ import MediaPicker from "./MediaPicker";
 import { useParams } from "react-router-dom";
 
 // Import Swiper React components, modules and styles
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 import "swiper/css";
@@ -22,12 +21,10 @@ const Picks = () => {
   const { currentUser } = useContext(UserContext);
   const [mediaPicked, setMediaPicked] = useState("album");
 
-  //MAKE BETTER LOGIC FOR THIS
   const [albumsclicked, setAlbumsclicked] = useState(1);
   const [moviesclicked, setMoviesclicked] = useState(0);
   const [booksclicked, setBooksclicked] = useState(0);
 
-  //LOGIC TO GET SPECIFIC USER PICKS NEEDS TO CHANGE
   useEffect(() => {
     fetch(`/picks/${mediaPicked}/${userId}`)
       .then((response) => response.json())
@@ -60,7 +57,6 @@ const Picks = () => {
     setBooksclicked(0);
   };
 
-  // console.log(mediaPicked);
   return (
     <main>
       {!picks ? (
@@ -70,13 +66,32 @@ const Picks = () => {
           </LoadingDiv>
         </>
       ) : picks.length === 0 ? (
-        <h1>No Picks Yet!</h1>
+        <Swiper
+          navigation={true}
+          modules={[Navigation]}
+          style={{
+            transition: "all 0.50s linear",
+            borderRadius: "10px",
+          }}
+        >
+          <StyledSwiperSlide>
+            <MediaPicker
+              albumsclicked={albumsclicked}
+              chooseAlbums={chooseAlbums}
+              moviesclicked={moviesclicked}
+              chooseMovies={chooseMovies}
+              booksclicked={booksclicked}
+              chooseBooks={chooseBooks}
+              mediaPicked={mediaPicked}
+              size={30}
+            />
+            <h1>No {mediaPicked} picks yet</h1>
+          </StyledSwiperSlide>
+        </Swiper>
       ) : (
         <>
-          {userId === currentUser.userId ? (
-            <h1>Your Picks</h1>
-          ) : (
-            <h1>{picks[0].userName}'s Picks</h1>
+          {userId !== currentUser.userId && (
+            <Title>{picks[0].userName}'s Picks</Title>
           )}
           <Swiper
             navigation={true}
@@ -101,7 +116,7 @@ const Picks = () => {
                   />
                   <PickDetail pick={pick} mediaPicked={mediaPicked} />
                   <div>
-                    {i + 1}/{picks.length}
+                    {i + 1}/<span>{picks.length}</span>
                   </div>
                 </StyledSwiperSlide>
               );
@@ -120,14 +135,20 @@ const LoadingDiv = styled.div`
   justify-content: center;
 `;
 
+const Title = styled.h2`
+  width: 95%;
+  text-align: right;
+`;
+
 const StyledSwiperSlide = styled(SwiperSlide)`
   margin-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* justify-content: center; */
   gap: 20px;
-  height: 500px;
+  height: fit-content;
+  min-height: 530px;
+  padding-bottom: 20px;
   background-color: #b6c0d6;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;

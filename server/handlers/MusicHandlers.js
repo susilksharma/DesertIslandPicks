@@ -1,4 +1,5 @@
 require("dotenv").config();
+const request = require("superagent");
 
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
@@ -12,7 +13,7 @@ const Discogs = require("disconnect").Client;
 const { TOKEN } = process.env;
 
 //Spotify Info
-const { SPOTIFY_TOKEN } = process.env;
+const { SPOTIFY_TOKEN, REFRESH_TOKEN } = process.env;
 
 //Search Discogs API for album based on search parameters
 const searchAlbum = async (req, res) => {
@@ -148,11 +149,24 @@ const getAlbumPicks = async (req, res) => {
 
 const getSpotify = async (req, res) => {
   const albumInfo = req.params.searchValue.replace(/ /g, "%20");
-  console.log(albumInfo);
+
   try {
-    // https://api.spotify.com/v1/search?q=album:nevermind%20artist:nirvana&type=album
+    const results = await request.get(
+      `https://api.spotify.com/v1/search?q=${albumInfo}&type=album`
+    );
+    results
+      ? res.status(200).json({
+          status: 200,
+          data: results,
+          message: "Success!",
+        })
+      : res.status(400).json({
+          status: 400,
+          data: albumInfo,
+          message: "Error",
+        });
   } catch (err) {
-    return res.status(500).json({ status: 500, message: err.message });
+    return res.status(500).json({ status: 500, message: err });
   }
 };
 

@@ -38,7 +38,6 @@ const searchMoviesByGenre = async (req, res) => {
   try {
     const results = await request.get(
       `https://api.themoviedb.org/3/discover/movie?api_key=${MOVIE_KEY}&with_genres=${genreId}`
-      // `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_KEY}&language=en-US&query=${searchValue}&page=1&include_adult=false`
     );
 
     results
@@ -80,44 +79,36 @@ const searchMoviesByDirector = async (req, res) => {
 const getMovieDetails = async (req, res) => {
   const movieId = req.params.movieId;
   try {
-    const results = await request.get(
+    const movie = await request.get(
       `https://api.themoviedb.org/3/movie/${movieId}?api_key=${MOVIE_KEY}&language=en-US`
-      // `http://www.omdbapi.com/?i=${movieId}&plot=full&apikey=${MOVIE_KEY}`
     );
 
-    results
-      ? res.status(200).json({
-          status: 200,
-          data: JSON.parse(results.text),
-          message: "Success!",
-        })
-      : res.status(400).json({ status: 400, data: movieId, message: "Error" });
-  } catch (error) {
-    return res.status(500).json({ status: 500, message: error });
-  }
-};
+    const details = await JSON.parse(movie.text);
 
-const getCrew = async (req, res) => {
-  const movieId = req.params.movieId;
-  try {
-    const results = await request.get(
+    const castCrew = await request.get(
       `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${MOVIE_KEY}`
     );
 
-    const director = await JSON.parse(results.text).crew.filter(
+    const director = await JSON.parse(castCrew.text).crew.filter(
       ({ job }) => job === "Director"
     );
 
-    const cast = await JSON.parse(results.text)
+    const cast = await JSON.parse(castCrew.text)
       .cast.map((cast) => {
         return cast.name;
       })
       .slice(0, 6);
 
-    director
+    const streaming = await request.get(
+      `https://api.themoviedb.org/3/movie/${movieId}/watch/providers?api_key=${MOVIE_KEY}`
+    );
+
+    const streamingLink = JSON.parse(streaming.text).results.CA;
+
+    details && director && cast && streamingLink
       ? res.status(200).json({
           status: 200,
-          data: { cast, director },
+          data: { details, cast, director, streamingLink },
           message: "Success!",
         })
       : res.status(400).json({ status: 400, data: movieId, message: "Error" });
@@ -270,7 +261,6 @@ module.exports = {
   searchMoviesByDirector,
   searchMovies,
   getMovieDetails,
-  getCrew,
   addMovie,
   getMoviePicks,
   addMovieReview,

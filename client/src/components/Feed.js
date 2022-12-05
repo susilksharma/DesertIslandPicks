@@ -29,10 +29,10 @@ const Feed = () => {
           })}
         </FeedDiv>
       )}
-      <section>
+      {/* <section>
         <h3>Picks Feed</h3>
         <Line />
-      </section>
+      </section> */}
     </Wrapper>
   );
 };
@@ -65,7 +65,7 @@ const FeedDiv = styled.div`
 
 const Line = styled.div`
   width: 100%;
-  border-top: 3px solid ${({ theme }) => theme.text};
+  border-top: 3px solid var(--dark-grey);
   margin: 15px 0;
 `;
 

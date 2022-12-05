@@ -21,6 +21,7 @@ const BookDetails = () => {
     fetch(`/book/${bookId.bookId}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data.data);
         setBook(data.data.items[0]);
       })
       //WHAT TO DO WITH ERROR
@@ -98,9 +99,10 @@ const BookDetails = () => {
             <h3>
               <span>
                 {book.volumeInfo?.categories?.[0]}/{book.volumeInfo?.publisher}
+                {book.volumeInfo?.pageCount} pages
               </span>
               {", "}
-              {book.volumeInfo?.publishedDate}
+              {book.volumeInfo?.publishedDate.slice(0, 4)}
             </h3>
             <Description>{book.volumeInfo?.description}</Description>
             <div>

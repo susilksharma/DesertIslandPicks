@@ -3,7 +3,7 @@ import Home from "./Home";
 import GlobalStyles from "./GlobalStyles";
 import Header from "./Header/Header";
 import Profile from "./Profile/Profile";
-import Explore from "./Explore";
+import Explore from "./Explore/Explore";
 import Error from "./Error";
 import Picks from "./Picks/Picks";
 import AlbumSearchResults from "./SearchResults/AlbumSearchResults";

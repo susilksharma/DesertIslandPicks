@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import ImageSmall from "./ImageSmall";
 import MediaPicker from "./MediaPicker";
+import { UserContext } from "../UserContext";
+import { useContext } from "react";
 
 // Import Swiper React components, modules and styles
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,6 +18,7 @@ import "swiper/css/navigation";
 //------------------------//
 const SmallPicks = ({ user }) => {
   const [mediaPicked, setMediaPicked] = useState("album");
+  const { currentUser } = useContext(UserContext);
 
   //MAKE BETTER LOGIC FOR THIS
   const [albumsclicked, setAlbumsclicked] = useState(1);
@@ -65,9 +68,13 @@ const SmallPicks = ({ user }) => {
             chooseBooks={chooseBooks}
             size={20}
           />
-          <h3>
-            {user.given_name} hasn't picked any {mediaPicked}s yet
-          </h3>
+          {currentUser.userId !== user.userId ? (
+            <h3>
+              {user.given_name} hasn't picked any {mediaPicked}s yet
+            </h3>
+          ) : (
+            <h3>You haven't picked any {mediaPicked}s yet</h3>
+          )}
         </StyledSwiperSlide>
       ) : (
         <Swiper navigation={true} modules={[Navigation]}>
@@ -88,7 +95,11 @@ const SmallPicks = ({ user }) => {
                   to={`/picks/user/${user.userId}`}
                   style={{ textDecoration: "none" }}
                 >
-                  <div>{pick.userName}'s Picks</div>
+                  {currentUser.userId === user.userId ? (
+                    <div> Your Picks</div>
+                  ) : (
+                    <div>{pick.userName}'s Picks</div>
+                  )}
                 </UserLink>
               </StyledSwiperSlide>
             );

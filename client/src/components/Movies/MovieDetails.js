@@ -4,13 +4,13 @@ import { UserContext } from "../UserContext";
 import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
+import { ImFilm } from "react-icons/im";
 
 //-----------------------------//
 //---Movie Details Component---//
 //-----------------------------//
 const MovieDetails = () => {
-  const [movie, setMovie] = useState(null);
-  const [crew, setCrew] = useState(null);
+  const [movieInfo, setMovieInfo] = useState(null);
   const movieId = useParams();
   const { currentUser } = useContext(UserContext);
   const { isAuthenticated } = useAuth0();
@@ -20,16 +20,13 @@ const MovieDetails = () => {
     fetch(`/movie/${movieId.movieId}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        setMovie(data.data);
+        setMovieInfo(data.data);
       })
       //WHAT TO DO WITH ERROR
       .catch((err) => console.log("Error: ", err));
-
-    fetch(`/movie-crew/${movieId.movieId}`)
-      .then((response) => response.json())
-      .then((data) => setCrew(data.data));
   }, []);
+
+  console.log(movieInfo);
 
   const addMovie = () => {
     isAuthenticated &&
@@ -38,12 +35,13 @@ const MovieDetails = () => {
         body: JSON.stringify({
           userId: currentUser.userId,
           userName: currentUser.name,
-          pickId: movie.imdb_id,
-          title: movie?.title,
-          artist: crew?.director[0].name,
-          image: `https://image.tmdb.org/t/p/original/${movie?.poster_path}`,
-          genres: movie?.genres,
-          year: movie.release_date.slice(0, 4),
+          pickId: movieInfo.details?.imdb_id,
+          title: movieInfo.details?.title,
+          artist: movieInfo.director[0].name,
+          image: `https://image.tmdb.org/t/p/original/${movieInfo.details?.poster_path}`,
+          genres: movieInfo.details?.genres,
+          year: movieInfo.details?.release_date.slice(0, 4),
+          link: movieInfo.streamingLink.link,
         }),
         headers: {
           Accept: "application/json",
@@ -62,11 +60,10 @@ const MovieDetails = () => {
           window.alert("Sorry, please try again.", error);
         });
   };
-  console.log(crew);
 
   return (
     <main>
-      {!movie && !crew ? (
+      {!movieInfo ? (
         <LoadingDiv>
           <img src="/spinnerv1.gif" alt="spinner" />
         </LoadingDiv>
@@ -74,8 +71,8 @@ const MovieDetails = () => {
         <MovieDiv>
           <ImgDiv onClick={addMovie} isAuthenticated={isAuthenticated}>
             <img
-              alt={`${movie?.title} cover`}
-              src={`https://image.tmdb.org/t/p/original/${movie?.poster_path}`}
+              alt={`${movieInfo.details?.title} cover`}
+              src={`https://image.tmdb.org/t/p/original/${movieInfo.details?.poster_path}`}
             />
             <div>
               {isAuthenticated ? (
@@ -86,16 +83,18 @@ const MovieDetails = () => {
             </div>
           </ImgDiv>
           <InfoDiv>
-            <h2>{movie?.title}</h2>
+            <h2>{movieInfo.details?.title}</h2>
             <h3>
               Directed by{" "}
-              <GenreLink to={`/search-movie-director/${crew?.director[0].id}`}>
-                {crew?.director[0].name},{" "}
+              <GenreLink
+                to={`/search-movie-director/${movieInfo?.director[0].id}`}
+              >
+                {movieInfo?.director[0].name},{" "}
               </GenreLink>
-              {movie?.release_date.slice(0, 4)}
+              {movieInfo.details?.release_date.slice(0, 4)}
             </h3>
             <h3>
-              {movie?.genres.map((genre) => {
+              {movieInfo.details?.genres.map((genre) => {
                 return (
                   <span key={genre?.id}>
                     <GenreLink to={`/search-movie-genre/${genre?.id}`}>
@@ -105,15 +104,25 @@ const MovieDetails = () => {
                   </span>
                 );
               })}
-              <span>{movie?.runtime} min</span>
+              <span>{movieInfo.details?.runtime} min</span>
             </h3>
             <div>
               <h3>Starring: </h3>
-              {crew?.cast.map((cast, i) => {
+              {movieInfo.cast?.map((cast, i) => {
                 return <p key={i}>{cast}</p>;
               })}
             </div>
-            <Description>{movie?.overview}</Description>
+            <Description>{movieInfo.details?.overview}</Description>
+            <div>
+              <h3>Streaming Options:</h3>
+              <a
+                href={movieInfo.streamingLink.link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FilmIcon size={30} />
+              </a>
+            </div>
           </InfoDiv>
         </MovieDiv>
       )}
@@ -148,6 +157,10 @@ const MovieDiv = styled.div`
   p {
     font-size: 0.8em;
   }
+`;
+
+const FilmIcon = styled(ImFilm)`
+  color: var(--dark-grey);
 `;
 
 const ImgDiv = styled.div`

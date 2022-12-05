@@ -33,7 +33,7 @@ const MediaPicker = ({
 };
 
 const StyledBook = styled(BsBook)`
-  color: ${(props) => (props.bookclicked === 1 ? "#ec7274" : "#F8F8F8")};
+  color: ${(props) => (props.booksclicked === 1 ? "#ec7274" : "#F8F8F8")};
 
   :hover {
     color: #ec7274;
@@ -65,7 +65,7 @@ const MediaTypeDiv = styled.div`
   width: 100%;
   background-color: var(--dark-grey);
   color: ${({ theme }) => theme.text};
-  padding: 5px;
+  padding: 2.5%;
   border-radius: 10px 10px 0 0;
 `;
 

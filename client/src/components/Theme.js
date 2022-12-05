@@ -1,5 +1,5 @@
 export const lightTheme = {
-  background: "#E8DFCA",
+  background: "#F2E3D5",
   text: "#464646",
   moon: "#F8F8F8",
   whiteToBlack: "#F8F8F8",

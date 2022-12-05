@@ -18,10 +18,15 @@ const searchBooks = async (req, res) => {
       `https://www.googleapis.com/books/v1/volumes?q=${searchValue}&key=${BOOK_KEY}`
     );
 
+    //Filter out results that don't contain images
+    const resultsArr = JSON.parse(results.text).items.filter((book) => {
+      return book.volumeInfo.imageLinks;
+    });
+
     results
       ? res.status(200).json({
           status: 200,
-          data: JSON.parse(results.text),
+          data: resultsArr,
           message: "Success!",
         })
       : res

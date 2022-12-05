@@ -7,7 +7,7 @@ import { AiOutlineEye } from "react-icons/ai";
 //-----------------------------//
 const BookIcon = ({ book }) => {
   return (
-    <BookDiv to={`/book/${book.id}`}>
+    <BookDiv to={`/book/${book?.id}`}>
       <ImgDiv>
         <img
           src={book?.volumeInfo?.imageLinks?.thumbnail}
@@ -46,7 +46,7 @@ const ImgDiv = styled.div`
   position: relative;
 
   img {
-    width: 100%;
+    height: 200px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   }
 
@@ -56,7 +56,7 @@ const ImgDiv = styled.div`
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100%;
+    height: 200px;
     width: 100%;
     transition: 0.5s ease;
     background-color: #464646;
