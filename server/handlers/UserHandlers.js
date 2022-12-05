@@ -193,7 +193,6 @@ const getRecommended = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   await client.connect();
   const userId = req.params.userId;
-  console.log(userId);
 
   try {
     const db = client.db("dipDb");

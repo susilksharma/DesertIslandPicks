@@ -20,7 +20,6 @@ const BookDetails = () => {
     fetch(`/book/${bookId.bookId}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data);
         setBook(data.data.items[0]);
       })
       .catch((err) => {

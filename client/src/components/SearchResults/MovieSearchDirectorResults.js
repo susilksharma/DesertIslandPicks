@@ -16,13 +16,11 @@ const MovieSearchDirectorResults = () => {
     fetch(`/search-movie-director/${directorId}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data.crew);
         setItems(data.data.crew);
       })
       .catch((err) => console.error("Error: ", err));
   }, []);
 
-  console.log("items: ", items);
   return (
     <main>
       {items && (

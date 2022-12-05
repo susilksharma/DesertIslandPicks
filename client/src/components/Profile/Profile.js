@@ -95,7 +95,8 @@ const Profile = () => {
                           </div>
                         );
                       })
-                      .slice(0, 10)}
+                      .slice(0, 10)
+                      .reverse()}
                   </div>
                 </>
               )}

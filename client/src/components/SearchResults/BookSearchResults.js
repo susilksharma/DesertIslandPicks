@@ -21,7 +21,6 @@ const BookSearchResults = () => {
       .catch((err) => console.error("Error: ", err));
   }, []);
 
-  console.log("books: ", books);
   return (
     <main>
       {books && (

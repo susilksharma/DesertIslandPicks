@@ -21,7 +21,6 @@ const MovieSearchResults = () => {
       .catch((err) => console.error("Error: ", err));
   }, []);
 
-  console.log("items: ", items);
   return (
     <main>
       {items && (

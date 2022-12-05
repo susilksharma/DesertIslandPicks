@@ -21,7 +21,6 @@ const AlbumDetails = () => {
     fetch(`/album/${albumId.albumId}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setAlbum(data.data);
       })
       .catch((err) => navigate("/error"));
