@@ -101,6 +101,7 @@ const TitleDiv = styled.div`
 `;
 
 const HomeLogo = styled.img`
-  height: 140px;
+  height: 145px;
+  margin-right: 10px;
 `;
 export default Home;

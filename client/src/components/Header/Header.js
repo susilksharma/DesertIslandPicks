@@ -44,7 +44,15 @@ const Header = ({ themeToggler }) => {
       >
         Profile
       </PageLink>
-      <PageLink to={"/explore"}>Explore</PageLink>
+
+      {currentUser && (
+        <PageLink
+          to={"/explore"}
+          style={{ visibility: !isAuthenticated && "hidden" }}
+        >
+          Explore
+        </PageLink>
+      )}
 
       {/*Check conditions for rendering Login/Logout button */}
       {error && <p>Authentication Error</p>}

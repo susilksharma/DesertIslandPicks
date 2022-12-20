@@ -26,7 +26,8 @@ const MovieSearchResults = () => {
       {items && (
         <ResultsDiv>
           {items.map((item) => {
-            return <MovieIcon key={item.backdrop_path} movie={item} />;
+            if (item.poster_path)
+              return <MovieIcon key={item.backdrop_path} movie={item} />;
           })}
         </ResultsDiv>
       )}

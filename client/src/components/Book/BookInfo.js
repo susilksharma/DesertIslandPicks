@@ -31,7 +31,7 @@ const BookInfo = ({ book }) => {
       <Description>{book?.volumeInfo?.description}</Description>
       <div>
         <h3>Google Books:</h3>
-        <a href={book?.volumeInfo?.infoLink}>
+        <a href={book?.volumeInfo?.infoLink} target="_blank" rel="noreferrer">
           <AiFillGoogleCircle size={30} />
         </a>
       </div>

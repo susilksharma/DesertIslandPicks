@@ -41,7 +41,11 @@ const Profile = () => {
         <>
           <HeaderDiv>
             <UserDiv>
-              <ProfileImg src={userInfo?.picture} alt={userInfo.name} />
+              <ProfileImg
+                src={userInfo?.picture}
+                alt={userInfo.name}
+                referrerpolicy="no-referrer"
+              />
               <div>
                 <h1>
                   {userInfo.given_name} {userInfo.family_name}
@@ -95,8 +99,8 @@ const Profile = () => {
                           </div>
                         );
                       })
-                      .slice(0, 10)
-                      .reverse()}
+                      .reverse()
+                      .slice(0, 10)}
                   </div>
                 </>
               )}
